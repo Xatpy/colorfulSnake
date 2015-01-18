@@ -9,10 +9,15 @@ $(document).on('ready', function() {
 
 	//Definimos algunas variables para configurar nuestro juego
 	var cellWidth = 10;
-	var d;
+	var d; 		//direction
+	
 	var food;
+	var listFood = [];
+	var numFood = 10;
+
+
 	var score;
-	var level = 1; //1 El nivel más lento, 10 el nivel más rápido.
+	var level = 10; //1 El nivel más lento, 10 el nivel más rápido.
 	var background = 'white';
 	var border = 'black';
 	var snakeColor = 'black';
@@ -28,14 +33,16 @@ $(document).on('ready', function() {
 		createSnake();
 		createFood();
 		score = 0;
-		if(typeof gameLoop != "undefined") {
+		if (typeof gameLoop != "undefined") {
 			clearInterval(gameLoop);
 		}
 		 
-		gameLoop = setInterval(paint, 100 / level);
+		//game speed
+		gameLoop = setInterval(paint, 1000 / level);
 	}
  
 	init();
+
 	//Creamos la víbora
 	function createSnake()
 	{
@@ -63,6 +70,22 @@ $(document).on('ready', function() {
 		snakeColor = createRandomColor();
 	}
 
+	function createRandomListFood() {
+		listFood = [];
+		var colorSnk;
+		for (var i = 0; i < numFood; ++i) {
+			var colorRnd = createRandomColor();
+			listFood.push( {
+					x: Math.round(Math.random() * (width - cellWidth) / cellWidth),
+					y: Math.round(Math.random() * (height - cellWidth) / cellWidth),
+					color: colorRnd
+				});
+			if (i === 0) {
+				snakeColor = colorRnd;
+			}
+		}// for 
+	}
+
 	//Dibujamos la víbora
 	function paint()
 	{
@@ -70,8 +93,10 @@ $(document).on('ready', function() {
 		context.fillRect(0, 0, width, height);
 		context.strokeStyle = border;
 		context.strokeRect(0, 0, width, height);
+
 		var nx = snake[0].x;
 		var ny = snake[0].y;
+
 		if (d == "right") {
 			nx++;
 		} else if (d == "left") {
@@ -84,7 +109,6 @@ $(document).on('ready', function() {
 
 		if (nx == -1 || nx == width / cellWidth || ny == -1 || ny == height / cellWidth || checkCollision(nx, ny, snake)) {
 			init();
- 
 			return;
 		}
 
@@ -93,31 +117,32 @@ $(document).on('ready', function() {
 				x: nx,
 				y: ny
 			};
- 
 			score++;
 			createFood();
 		} else {
-			var tail = snake.pop();
-			 
+			var tail = snake.pop();	 
 			tail.x = nx;
 			tail.y = ny;
 		}
 
 		snake.unshift(tail);
-			for(var i = 0; i < snake.length; i++) {
-				var c = snake[i];
-				paintCell(c.x, c.y);
-			}
 
-		paintCell(food.x, food.y);
+		for (var i = 0; i < snake.length; i++) {
+			var c = snake[i];
+			paintCell(c.x, c.y, snakeColor);
+		}
+
 		var scoreText = "Score: " + score;
 		context.fillText(scoreText, 5, height - 5);
+
+		//paintCell(food.x, food.y, 'red');
+		for (int i = 0; )
 	}
 
 	//Pintamos la celda
-	function paintCell(x, y)
+	function paintCell(x, y, color)
 	{
-		context.fillStyle = snakeColor;
+		context.fillStyle = color;
 		context.fillRect(x * cellWidth, y * cellWidth, cellWidth, cellWidth);
 		context.strokeStyle = background;
 		context.strokeRect(x * cellWidth, y * cellWidth, cellWidth, cellWidth);
