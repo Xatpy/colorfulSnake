@@ -136,7 +136,7 @@ $(document).on('ready', function() {
 		context.fillText(scoreText, 5, height - 5);
 
 		//paintCell(food.x, food.y, 'red');
-		for (int i = 0; )
+		for (int i = 0; i < numFood; ++i)
 	}
 
 	//Pintamos la celda
