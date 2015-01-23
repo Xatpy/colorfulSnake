@@ -32,6 +32,7 @@ $(document).on('ready', function() {
 		d = "right";
 		createSnake();
 		createFood();
+		createRandomListFood();
 		score = 0;
 		if (typeof gameLoop != "undefined") {
 			clearInterval(gameLoop);
@@ -64,10 +65,20 @@ $(document).on('ready', function() {
 	function createFood()
 	{
 		food = {
-					x: Math.round(Math.random() * (width - cellWidth) / cellWidth),
-					y: Math.round(Math.random() * (height - cellWidth) / cellWidth),
-				};
+				x: Math.round(Math.random() * (width - cellWidth) / cellWidth),
+				y: Math.round(Math.random() * (height - cellWidth) / cellWidth),
+			};
 		snakeColor = createRandomColor();
+	}
+
+
+	function existColor(color) {
+		for (var i = 0; i < listFood.length; ++i) {
+			if (listFood[i].color === color) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	function createRandomListFood() {
@@ -75,6 +86,9 @@ $(document).on('ready', function() {
 		var colorSnk;
 		for (var i = 0; i < numFood; ++i) {
 			var colorRnd = createRandomColor();
+			while (existColor(colorRnd)) {
+				colorRnd = createRandomColor();
+			}
 			listFood.push( {
 					x: Math.round(Math.random() * (width - cellWidth) / cellWidth),
 					y: Math.round(Math.random() * (height - cellWidth) / cellWidth),
@@ -84,6 +98,23 @@ $(document).on('ready', function() {
 				snakeColor = colorRnd;
 			}
 		}// for 
+	}
+
+	//Returns:  0 if it has no eaten. 
+	//          1 if it has eaten the correct color
+	//         -1 incorrect color
+	function hasEatenFood(nx, ny) {
+		for (var i = 0; i < numFood; i++) {
+			debugger
+			if ( (nx === listFood[i].x) && (ny === listFood[i].y) ) {
+				if (listFood[i].color === snakeColor) {
+					return 1
+				} else {
+					return -1;
+				}
+			}
+		}
+		return 0;
 	}
 
 	//Dibujamos la víbora
@@ -112,13 +143,23 @@ $(document).on('ready', function() {
 			return;
 		}
 
-		if(nx == food.x && ny == food.y) {
+		//if(nx == food.x && ny == food.y) {
+		var hasEaten = hasEatenFood(nx,ny);
+		if (hasEaten !== 0) {
+			if (hasEaten === 1) {
+				console.log('correct');
+			} else {
+				console.log('incorrect');
+				init();
+			}
+
 			var tail = {
 				x: nx,
 				y: ny
 			};
 			score++;
-			createFood();
+			//createFood();
+			createRandomListFood();
 		} else {
 			var tail = snake.pop();	 
 			tail.x = nx;
@@ -136,7 +177,9 @@ $(document).on('ready', function() {
 		context.fillText(scoreText, 5, height - 5);
 
 		//paintCell(food.x, food.y, 'red');
-		for (int i = 0; i < numFood; ++i)
+		for (var i = 0; i < numFood; ++i) {
+			paintCell(listFood[i].x, listFood[i].y, listFood[i].color);
+		}
 	}
 
 	//Pintamos la celda
