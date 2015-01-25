@@ -7,9 +7,13 @@ $(document).on('ready', function() {
 	var width = $("#snake").width();
 	var height = $("#snake").height();
 
+	var state = "playing";
+	var pause = false;
+
 	//Definimos algunas variables para configurar nuestro juego
 	var cellWidth = 10;
 	var d; 		//direction
+	var old_direction;
 	
 	var food;
 	var listFood = [];
@@ -39,7 +43,7 @@ $(document).on('ready', function() {
 		}
 		 
 		//game speed
-		gameLoop = setInterval(paint, 1000 / level);
+		gameLoop = setInterval(update, 1000 / level);
 	}
  
 	init();
@@ -105,7 +109,6 @@ $(document).on('ready', function() {
 	//         -1 incorrect color
 	function hasEatenFood(nx, ny) {
 		for (var i = 0; i < numFood; i++) {
-			debugger
 			if ( (nx === listFood[i].x) && (ny === listFood[i].y) ) {
 				if (listFood[i].color === snakeColor) {
 					return 1
@@ -117,9 +120,23 @@ $(document).on('ready', function() {
 		return 0;
 	}
 
-	//Dibujamos la víbora
-	function paint()
-	{
+	function update() {
+		if (state === "playing") {
+			paint();
+		} else if (state === "pause") {
+			gameOver();
+		}
+	}
+
+	function gameOver() {
+		console.log("gameOver...pressEnter");
+		if (d === "enter") {
+			state = "playing";
+			init();
+		}
+	}
+
+	function paint() {
 		context.fillStyle = background;
 		context.fillRect(0, 0, width, height);
 		context.strokeStyle = border;
@@ -128,18 +145,34 @@ $(document).on('ready', function() {
 		var nx = snake[0].x;
 		var ny = snake[0].y;
 
-		if (d == "right") {
-			nx++;
-		} else if (d == "left") {
-			nx--;
-		} else if (d == "up") {
-			ny--;
-		} else if (d == "down") {
-			ny++;
+		//pause = false;
+
+		if (d === "enter") {
+			pause = true;
+		} else {
+			if (old_direction !== undefined) {
+				d = old_direction;
+				old_direction = undefined;
+				pause = false;
+			}
+
+			if (d == "right") {
+				nx++;
+			} else if (d == "left") {
+				nx--;
+			} else if (d == "up") {
+				ny--;
+			} else if (d == "down") {
+				ny++;
+			} 
 		}
 
+	if (!pause) {
+
 		if (nx == -1 || nx == width / cellWidth || ny == -1 || ny == height / cellWidth || checkCollision(nx, ny, snake)) {
-			init();
+			//init();
+			state = "pause";
+			console.log(d);
 			return;
 		}
 
@@ -150,7 +183,8 @@ $(document).on('ready', function() {
 				console.log('correct');
 			} else {
 				console.log('incorrect');
-				init();
+				state = "pause";
+				//init();
 			}
 
 			var tail = {
@@ -167,6 +201,7 @@ $(document).on('ready', function() {
 		}
 
 		snake.unshift(tail);
+	}
 
 		for (var i = 0; i < snake.length; i++) {
 			var c = snake[i];
@@ -214,6 +249,9 @@ $(document).on('ready', function() {
 			d = "right";
 		} else if (key == "40" && d != "up") {
 			d = "down";
+		} else if (key == "13" && d != "enter") {
+			old_direction = d;
+			d = "enter";
 		}
 	});
 });
