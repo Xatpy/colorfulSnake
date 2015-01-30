@@ -7,6 +7,8 @@ $(document).on('ready', function() {
 	var width = $("#snake").width();
 	var height = $("#snake").height();
 
+	var numCellsWidth, numCellsHeight;
+
 	var state = "playing";
 	var pause = false;
 
@@ -29,13 +31,28 @@ $(document).on('ready', function() {
 	//Creamos nuestra víbora
 	var snake;
 
+	var textGameOver = [];
+	var textPause = [];
+
 	//El juego tiene la dirección "right" por defecto y se ejecuta la función paint
 	//dependiendo el nivel que hayas configurado arriba
 	function init()
 	{
+		numCellsWidth = width / cellWidth;
+		numCellsHeight = height / cellWidth;
+
+		generateTextGameOver();
+		generateTextPause();
+
+		resetGame();
+	}
+
+	function resetGame() {
 		d = "right";
+		old_direction = undefined;
+
 		createSnake();
-		createFood();
+		//createFood();
 		createRandomListFood();
 		score = 0;
 		if (typeof gameLoop != "undefined") {
@@ -124,7 +141,18 @@ $(document).on('ready', function() {
 		if (state === "playing") {
 			paint();
 		} else if (state === "pause") {
+			pauseState();
+		} else if (state === "gameOver") {
 			gameOver();
+		}
+	}
+
+	function pauseState() {
+		console.log('pause');
+		if (d === "enter") {
+			state = "playing";
+			//init();
+			resetGame();
 		}
 	}
 
@@ -132,7 +160,8 @@ $(document).on('ready', function() {
 		console.log("gameOver...pressEnter");
 		if (d === "enter") {
 			state = "playing";
-			init();
+			//init();
+			resetGame();
 		}
 	}
 
@@ -167,41 +196,46 @@ $(document).on('ready', function() {
 			} 
 		}
 
-	if (!pause) {
+		if (!pause) {
 
-		if (nx == -1 || nx == width / cellWidth || ny == -1 || ny == height / cellWidth || checkCollision(nx, ny, snake)) {
-			//init();
-			state = "pause";
-			console.log(d);
-			return;
-		}
-
-		//if(nx == food.x && ny == food.y) {
-		var hasEaten = hasEatenFood(nx,ny);
-		if (hasEaten !== 0) {
-			if (hasEaten === 1) {
-				console.log('correct');
-			} else {
-				console.log('incorrect');
-				state = "pause";
+			if (nx == -1 || nx == numCellsWidth || ny == -1 || ny == numCellsHeight || checkCollision(nx, ny, snake)) {
 				//init();
+				state = "gameOver";
+				console.log(d);
+				return;
 			}
 
-			var tail = {
-				x: nx,
-				y: ny
-			};
-			score++;
-			//createFood();
-			createRandomListFood();
-		} else {
-			var tail = snake.pop();	 
-			tail.x = nx;
-			tail.y = ny;
+			//if(nx == food.x && ny == food.y) {
+			var hasEaten = hasEatenFood(nx,ny);
+			if (hasEaten !== 0) {
+				if (hasEaten === 1) {
+					console.log('correct');
+				} else {
+					console.log('incorrect');
+					state = "pause";
+					state = "gameOver";
+					//init();
+				}
+
+				var tail = {
+					x: nx,
+					y: ny
+				};
+				score++;
+				//createFood();
+				createRandomListFood();
+			} else {
+				var tail = snake.pop();	 
+				tail.x = nx;
+				tail.y = ny;
+			}
+
+			snake.unshift(tail);
 		}
 
-		snake.unshift(tail);
-	}
+		if (state === "gameOver") {
+			paintGameOver();
+		}
 
 		for (var i = 0; i < snake.length; i++) {
 			var c = snake[i];
@@ -214,6 +248,116 @@ $(document).on('ready', function() {
 		//paintCell(food.x, food.y, 'red');
 		for (var i = 0; i < numFood; ++i) {
 			paintCell(listFood[i].x, listFood[i].y, listFood[i].color);
+		}
+	}
+
+	function generateTextGameOver() {
+		var clr = 'black';
+
+		// G
+		textGameOver.push({x: 2,y: 1, color:clr});
+		textGameOver.push({x: 3,y: 1, color:clr});
+		textGameOver.push({x: 4,y: 1, color:clr});
+		textGameOver.push({x: 5,y: 2, color:clr});
+		textGameOver.push({x: 1,y: 2, color:clr});
+		textGameOver.push({x: 1,y: 3, color:clr});
+		textGameOver.push({x: 1,y: 4, color:clr});
+		textGameOver.push({x: 1,y: 5, color:clr});
+		textGameOver.push({x: 1,y: 6, color:clr});
+		textGameOver.push({x: 2,y: 7, color:clr});
+		textGameOver.push({x: 3,y: 7, color:clr});
+		textGameOver.push({x: 4,y: 7, color:clr});
+        textGameOver.push({x: 5,y: 6, color:clr});
+        textGameOver.push({x: 5,y: 4, color:clr});
+        textGameOver.push({x: 5,y: 5, color:clr});
+        textGameOver.push({x: 4,y: 4, color:clr});
+        textGameOver.push({x: 3,y: 4, color:clr});
+
+        // A
+        textGameOver.push({x: 8, y: 1, color:clr});
+        textGameOver.push({x: 7, y: 2, color:clr});
+        textGameOver.push({x: 7, y: 3, color:clr});
+        textGameOver.push({x: 7, y: 4, color:clr});
+        textGameOver.push({x: 7, y: 5, color:clr});
+        textGameOver.push({x: 7, y: 6, color:clr});
+        textGameOver.push({x: 7, y: 7, color:clr});
+        textGameOver.push({x: 9, y: 1, color:clr});
+        textGameOver.push({x: 10,y: 1, color:clr});        
+        textGameOver.push({x: 11,y: 2, color:clr});
+        textGameOver.push({x: 11,y: 3, color:clr});
+        textGameOver.push({x: 11,y: 4, color:clr});
+        textGameOver.push({x: 11,y: 5, color:clr});
+        textGameOver.push({x: 11,y: 6, color:clr});
+        textGameOver.push({x: 11,y: 7, color:clr});
+        textGameOver.push({x: 8, y: 4, color:clr});        
+        textGameOver.push({x: 9, y: 4, color:clr});
+        textGameOver.push({x: 10,y: 4, color:clr});
+
+        // M
+        textGameOver.push({x: 13, y: 1, color:clr});
+        textGameOver.push({x: 13, y: 2, color:clr});
+        textGameOver.push({x: 13, y: 3, color:clr});
+        textGameOver.push({x: 13, y: 4, color:clr});
+        textGameOver.push({x: 13, y: 5, color:clr});
+        textGameOver.push({x: 13, y: 6, color:clr});
+        textGameOver.push({x: 13, y: 7, color:clr});
+        textGameOver.push({x: 14, y: 2, color:clr});
+        textGameOver.push({x: 15, y: 3, color:clr});
+        textGameOver.push({x: 16, y: 2, color:clr});
+        textGameOver.push({x: 17, y: 1, color:clr});
+        textGameOver.push({x: 17, y: 1, color:clr});
+        textGameOver.push({x: 17, y: 2, color:clr});
+        textGameOver.push({x: 17, y: 3, color:clr});
+        textGameOver.push({x: 17, y: 4, color:clr});
+        textGameOver.push({x: 17, y: 5, color:clr});
+        textGameOver.push({x: 17, y: 6, color:clr});
+        textGameOver.push({x: 17, y: 7, color:clr});
+
+        // E
+        textGameOver.push({x: 19, y: 1, color:clr});
+        textGameOver.push({x: 19, y: 2, color:clr});
+        textGameOver.push({x: 19, y: 3, color:clr});
+        textGameOver.push({x: 19, y: 4, color:clr});
+        textGameOver.push({x: 19, y: 5, color:clr});
+        textGameOver.push({x: 19, y: 6, color:clr});
+        textGameOver.push({x: 19, y: 7, color:clr});
+        textGameOver.push({x: 20, y: 1, color:clr});
+        textGameOver.push({x: 20, y: 4, color:clr});
+        textGameOver.push({x: 20, y: 7, color:clr});
+        textGameOver.push({x: 21, y: 1, color:clr});
+        textGameOver.push({x: 21, y: 4, color:clr});
+        textGameOver.push({x: 21, y: 7, color:clr});
+        // textGameOver.push({x: 17, y: 3, color:clr});
+        // textGameOver.push({x: 17, y: 4, color:clr});
+        // textGameOver.push({x: 17, y: 5, color:clr});
+        // textGameOver.push({x: 17, y: 6, color:clr});
+        // textGameOver.push({x: 17, y: 7, color:clr});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	}
+
+	function generateTextPause() {
+
+	}
+
+	function paintGameOver() {
+		var lng = textGameOver.length;
+		for (var i = 0; i < lng; ++i) {
+			paintCell(textGameOver[i].x, textGameOver[i].y, textGameOver[i].color);
 		}
 	}
 
