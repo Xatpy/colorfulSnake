@@ -327,11 +327,71 @@ $(document).on('ready', function() {
         textGameOver.push({x: 21, y: 1, color:clr});
         textGameOver.push({x: 21, y: 4, color:clr});
         textGameOver.push({x: 21, y: 7, color:clr});
-        // textGameOver.push({x: 17, y: 3, color:clr});
-        // textGameOver.push({x: 17, y: 4, color:clr});
-        // textGameOver.push({x: 17, y: 5, color:clr});
-        // textGameOver.push({x: 17, y: 6, color:clr});
-        // textGameOver.push({x: 17, y: 7, color:clr});
+
+        //O 
+        textGameOver.push({x: 2, y: 11, color:clr});
+        textGameOver.push({x: 1, y: 12, color:clr});
+        textGameOver.push({x: 1, y: 13, color:clr});
+        textGameOver.push({x: 1, y: 14, color:clr});
+        textGameOver.push({x: 1, y: 15, color:clr});
+        textGameOver.push({x: 1, y: 16, color:clr});
+        textGameOver.push({x: 2, y: 17, color:clr});
+        textGameOver.push({x: 3, y: 11, color:clr});
+        textGameOver.push({x: 4, y: 11, color:clr});
+        textGameOver.push({x: 5, y: 12, color:clr});
+        textGameOver.push({x: 5, y: 13, color:clr});
+        textGameOver.push({x: 5, y: 14, color:clr});
+        textGameOver.push({x: 5, y: 15, color:clr});
+        textGameOver.push({x: 5, y: 16, color:clr});
+        textGameOver.push({x: 4, y: 17, color:clr});
+        textGameOver.push({x: 3, y: 17, color:clr});
+
+        // V
+        textGameOver.push({x: 7, y: 11, color:clr});
+        textGameOver.push({x: 7, y: 12, color:clr});
+        textGameOver.push({x: 7, y: 13, color:clr});
+        textGameOver.push({x: 7, y: 14, color:clr});
+        textGameOver.push({x: 8, y: 15, color:clr});
+        textGameOver.push({x: 8, y: 16, color:clr});
+        textGameOver.push({x: 9, y: 17, color:clr});
+        textGameOver.push({x: 10, y: 16, color:clr});
+        textGameOver.push({x: 10, y: 15, color:clr});
+        textGameOver.push({x: 11, y: 14, color:clr});
+        textGameOver.push({x: 11, y: 13, color:clr});
+        textGameOver.push({x: 11, y: 12, color:clr});
+        textGameOver.push({x: 11, y: 11, color:clr});
+
+        // E
+        textGameOver.push({x: 13, y: 11, color:clr});
+        textGameOver.push({x: 13, y: 12, color:clr});
+        textGameOver.push({x: 13, y: 13, color:clr});
+        textGameOver.push({x: 13, y: 14, color:clr});
+        textGameOver.push({x: 13, y: 15, color:clr});
+        textGameOver.push({x: 13, y: 16, color:clr});
+        textGameOver.push({x: 13, y: 17, color:clr});
+        textGameOver.push({x: 13, y: 11, color:clr});
+        textGameOver.push({x: 14, y: 14, color:clr});
+        textGameOver.push({x: 14, y: 17, color:clr});
+        textGameOver.push({x: 14, y: 11, color:clr});
+        textGameOver.push({x: 15, y: 14, color:clr});
+        textGameOver.push({x: 15, y: 17, color:clr});
+        textGameOver.push({x: 15, y: 11, color:clr});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
