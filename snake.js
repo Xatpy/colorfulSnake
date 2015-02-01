@@ -252,161 +252,153 @@ $(document).on('ready', function() {
 	}
 
 	function generateTextGameOver() {
+
+		var offsetX = 9;
+		var offsetY = 9;
 		var clr = 'black';
 
 		// G
-		textGameOver.push({x: 2,y: 1, color:clr});
-		textGameOver.push({x: 3,y: 1, color:clr});
-		textGameOver.push({x: 4,y: 1, color:clr});
-		textGameOver.push({x: 5,y: 2, color:clr});
-		textGameOver.push({x: 1,y: 2, color:clr});
-		textGameOver.push({x: 1,y: 3, color:clr});
-		textGameOver.push({x: 1,y: 4, color:clr});
-		textGameOver.push({x: 1,y: 5, color:clr});
-		textGameOver.push({x: 1,y: 6, color:clr});
-		textGameOver.push({x: 2,y: 7, color:clr});
-		textGameOver.push({x: 3,y: 7, color:clr});
-		textGameOver.push({x: 4,y: 7, color:clr});
-        textGameOver.push({x: 5,y: 6, color:clr});
-        textGameOver.push({x: 5,y: 4, color:clr});
-        textGameOver.push({x: 5,y: 5, color:clr});
-        textGameOver.push({x: 4,y: 4, color:clr});
-        textGameOver.push({x: 3,y: 4, color:clr});
+		textGameOver.push({x: offsetX + 2, y: offsetY + 1, color:clr});
+		textGameOver.push({x: offsetX + 3, y: offsetY + 1, color:clr});
+		textGameOver.push({x: offsetX + 4, y: offsetY + 1, color:clr});
+		textGameOver.push({x: offsetX + 5, y: offsetY + 2, color:clr});
+		textGameOver.push({x: offsetX + 1, y: offsetY + 2, color:clr});
+		textGameOver.push({x: offsetX + 1, y: offsetY + 3, color:clr});
+		textGameOver.push({x: offsetX + 1, y: offsetY + 4, color:clr});
+		textGameOver.push({x: offsetX + 1, y: offsetY + 5, color:clr});
+		textGameOver.push({x: offsetX + 1, y: offsetY + 6, color:clr});
+		textGameOver.push({x: offsetX + 2, y: offsetY + 7, color:clr});
+		textGameOver.push({x: offsetX + 3, y: offsetY + 7, color:clr});
+		textGameOver.push({x: offsetX + 4, y: offsetY + 7, color:clr});
+        textGameOver.push({x: offsetX + 5, y: offsetY + 6, color:clr});
+        textGameOver.push({x: offsetX + 5, y: offsetY + 4, color:clr});
+        textGameOver.push({x: offsetX + 5, y: offsetY + 5, color:clr});
+        textGameOver.push({x: offsetX + 4, y: offsetY + 4, color:clr});
+        textGameOver.push({x: offsetX + 3, y: offsetY + 4, color:clr});
 
         // A
-        textGameOver.push({x: 8, y: 1, color:clr});
-        textGameOver.push({x: 7, y: 2, color:clr});
-        textGameOver.push({x: 7, y: 3, color:clr});
-        textGameOver.push({x: 7, y: 4, color:clr});
-        textGameOver.push({x: 7, y: 5, color:clr});
-        textGameOver.push({x: 7, y: 6, color:clr});
-        textGameOver.push({x: 7, y: 7, color:clr});
-        textGameOver.push({x: 9, y: 1, color:clr});
-        textGameOver.push({x: 10,y: 1, color:clr});        
-        textGameOver.push({x: 11,y: 2, color:clr});
-        textGameOver.push({x: 11,y: 3, color:clr});
-        textGameOver.push({x: 11,y: 4, color:clr});
-        textGameOver.push({x: 11,y: 5, color:clr});
-        textGameOver.push({x: 11,y: 6, color:clr});
-        textGameOver.push({x: 11,y: 7, color:clr});
-        textGameOver.push({x: 8, y: 4, color:clr});        
-        textGameOver.push({x: 9, y: 4, color:clr});
-        textGameOver.push({x: 10,y: 4, color:clr});
+        textGameOver.push({x: offsetX + 8, y: offsetY + 1, color:clr});
+        textGameOver.push({x: offsetX + 7, y: offsetY + 2, color:clr});
+        textGameOver.push({x: offsetX + 7, y: offsetY + 3, color:clr});
+        textGameOver.push({x: offsetX + 7, y: offsetY + 4, color:clr});
+        textGameOver.push({x: offsetX + 7, y: offsetY + 5, color:clr});
+        textGameOver.push({x: offsetX + 7, y: offsetY + 6, color:clr});
+        textGameOver.push({x: offsetX + 7, y: offsetY + 7, color:clr});
+        textGameOver.push({x: offsetX + 9, y: offsetY + 1, color:clr});
+        textGameOver.push({x: offsetX + 10,y: offsetY + 1, color:clr});        
+        textGameOver.push({x: offsetX + 11,y: offsetY + 2, color:clr});
+        textGameOver.push({x: offsetX + 11,y: offsetY + 3, color:clr});
+        textGameOver.push({x: offsetX + 11,y: offsetY + 4, color:clr});
+        textGameOver.push({x: offsetX + 11,y: offsetY + 5, color:clr});
+        textGameOver.push({x: offsetX + 11,y: offsetY + 6, color:clr});
+        textGameOver.push({x: offsetX + 11,y: offsetY + 7, color:clr});
+        textGameOver.push({x: offsetX + 8, y: offsetY + 4, color:clr});        
+        textGameOver.push({x: offsetX + 9, y: offsetY + 4, color:clr});
+        textGameOver.push({x: offsetX + 10,y: offsetY + 4, color:clr});
 
         // M
-        textGameOver.push({x: 13, y: 1, color:clr});
-        textGameOver.push({x: 13, y: 2, color:clr});
-        textGameOver.push({x: 13, y: 3, color:clr});
-        textGameOver.push({x: 13, y: 4, color:clr});
-        textGameOver.push({x: 13, y: 5, color:clr});
-        textGameOver.push({x: 13, y: 6, color:clr});
-        textGameOver.push({x: 13, y: 7, color:clr});
-        textGameOver.push({x: 14, y: 2, color:clr});
-        textGameOver.push({x: 15, y: 3, color:clr});
-        textGameOver.push({x: 16, y: 2, color:clr});
-        textGameOver.push({x: 17, y: 1, color:clr});
-        textGameOver.push({x: 17, y: 1, color:clr});
-        textGameOver.push({x: 17, y: 2, color:clr});
-        textGameOver.push({x: 17, y: 3, color:clr});
-        textGameOver.push({x: 17, y: 4, color:clr});
-        textGameOver.push({x: 17, y: 5, color:clr});
-        textGameOver.push({x: 17, y: 6, color:clr});
-        textGameOver.push({x: 17, y: 7, color:clr});
+        textGameOver.push({x: offsetX + 13, y: offsetY + 1, color:clr});
+        textGameOver.push({x: offsetX + 13, y: offsetY + 2, color:clr});
+        textGameOver.push({x: offsetX + 13, y: offsetY + 3, color:clr});
+        textGameOver.push({x: offsetX + 13, y: offsetY + 4, color:clr});
+        textGameOver.push({x: offsetX + 13, y: offsetY + 5, color:clr});
+        textGameOver.push({x: offsetX + 13, y: offsetY + 6, color:clr});
+        textGameOver.push({x: offsetX + 13, y: offsetY + 7, color:clr});
+        textGameOver.push({x: offsetX + 14, y: offsetY + 2, color:clr});
+        textGameOver.push({x: offsetX + 15, y: offsetY + 3, color:clr});
+        textGameOver.push({x: offsetX + 16, y: offsetY + 2, color:clr});
+        textGameOver.push({x: offsetX + 17, y: offsetY + 1, color:clr});
+        textGameOver.push({x: offsetX + 17, y: offsetY + 1, color:clr});
+        textGameOver.push({x: offsetX + 17, y: offsetY + 2, color:clr});
+        textGameOver.push({x: offsetX + 17, y: offsetY + 3, color:clr});
+        textGameOver.push({x: offsetX + 17, y: offsetY + 4, color:clr});
+        textGameOver.push({x: offsetX + 17, y: offsetY + 5, color:clr});
+        textGameOver.push({x: offsetX + 17, y: offsetY + 6, color:clr});
+        textGameOver.push({x: offsetX + 17, y: offsetY + 7, color:clr});
 
         // E
-        textGameOver.push({x: 19, y: 1, color:clr});
-        textGameOver.push({x: 19, y: 2, color:clr});
-        textGameOver.push({x: 19, y: 3, color:clr});
-        textGameOver.push({x: 19, y: 4, color:clr});
-        textGameOver.push({x: 19, y: 5, color:clr});
-        textGameOver.push({x: 19, y: 6, color:clr});
-        textGameOver.push({x: 19, y: 7, color:clr});
-        textGameOver.push({x: 20, y: 1, color:clr});
-        textGameOver.push({x: 20, y: 4, color:clr});
-        textGameOver.push({x: 20, y: 7, color:clr});
-        textGameOver.push({x: 21, y: 1, color:clr});
-        textGameOver.push({x: 21, y: 4, color:clr});
-        textGameOver.push({x: 21, y: 7, color:clr});
+        textGameOver.push({x: offsetX + 19, y: offsetY + 1, color:clr});
+        textGameOver.push({x: offsetX + 19, y: offsetY + 2, color:clr});
+        textGameOver.push({x: offsetX + 19, y: offsetY + 3, color:clr});
+        textGameOver.push({x: offsetX + 19, y: offsetY + 4, color:clr});
+        textGameOver.push({x: offsetX + 19, y: offsetY + 5, color:clr});
+        textGameOver.push({x: offsetX + 19, y: offsetY + 6, color:clr});
+        textGameOver.push({x: offsetX + 19, y: offsetY + 7, color:clr});
+        textGameOver.push({x: offsetX + 20, y: offsetY + 1, color:clr});
+        textGameOver.push({x: offsetX + 20, y: offsetY + 4, color:clr});
+        textGameOver.push({x: offsetX + 20, y: offsetY + 7, color:clr});
+        textGameOver.push({x: offsetX + 21, y: offsetY + 1, color:clr});
+        textGameOver.push({x: offsetX + 21, y: offsetY + 4, color:clr});
+        textGameOver.push({x: offsetX + 21, y: offsetY + 7, color:clr});
 
         //O 
-        textGameOver.push({x: 2, y: 11, color:clr});
-        textGameOver.push({x: 1, y: 12, color:clr});
-        textGameOver.push({x: 1, y: 13, color:clr});
-        textGameOver.push({x: 1, y: 14, color:clr});
-        textGameOver.push({x: 1, y: 15, color:clr});
-        textGameOver.push({x: 1, y: 16, color:clr});
-        textGameOver.push({x: 2, y: 17, color:clr});
-        textGameOver.push({x: 3, y: 11, color:clr});
-        textGameOver.push({x: 4, y: 11, color:clr});
-        textGameOver.push({x: 5, y: 12, color:clr});
-        textGameOver.push({x: 5, y: 13, color:clr});
-        textGameOver.push({x: 5, y: 14, color:clr});
-        textGameOver.push({x: 5, y: 15, color:clr});
-        textGameOver.push({x: 5, y: 16, color:clr});
-        textGameOver.push({x: 4, y: 17, color:clr});
-        textGameOver.push({x: 3, y: 17, color:clr});
+        textGameOver.push({x: offsetX + 2, y: offsetY + 11, color:clr});
+        textGameOver.push({x: offsetX + 1, y: offsetY + 12, color:clr});
+        textGameOver.push({x: offsetX + 1, y: offsetY + 13, color:clr});
+        textGameOver.push({x: offsetX + 1, y: offsetY + 14, color:clr});
+        textGameOver.push({x: offsetX + 1, y: offsetY + 15, color:clr});
+        textGameOver.push({x: offsetX + 1, y: offsetY + 16, color:clr});
+        textGameOver.push({x: offsetX + 2, y: offsetY + 17, color:clr});
+        textGameOver.push({x: offsetX + 3, y: offsetY + 11, color:clr});
+        textGameOver.push({x: offsetX + 4, y: offsetY + 11, color:clr});
+        textGameOver.push({x: offsetX + 5, y: offsetY + 12, color:clr});
+        textGameOver.push({x: offsetX + 5, y: offsetY + 13, color:clr});
+        textGameOver.push({x: offsetX + 5, y: offsetY + 14, color:clr});
+        textGameOver.push({x: offsetX + 5, y: offsetY + 15, color:clr});
+        textGameOver.push({x: offsetX + 5, y: offsetY + 16, color:clr});
+        textGameOver.push({x: offsetX + 4, y: offsetY + 17, color:clr});
+        textGameOver.push({x: offsetX + 3, y: offsetY + 17, color:clr});
 
         // V
-        textGameOver.push({x: 7, y: 11, color:clr});
-        textGameOver.push({x: 7, y: 12, color:clr});
-        textGameOver.push({x: 7, y: 13, color:clr});
-        textGameOver.push({x: 7, y: 14, color:clr});
-        textGameOver.push({x: 8, y: 15, color:clr});
-        textGameOver.push({x: 8, y: 16, color:clr});
-        textGameOver.push({x: 9, y: 17, color:clr});
-        textGameOver.push({x: 10, y: 16, color:clr});
-        textGameOver.push({x: 10, y: 15, color:clr});
-        textGameOver.push({x: 11, y: 14, color:clr});
-        textGameOver.push({x: 11, y: 13, color:clr});
-        textGameOver.push({x: 11, y: 12, color:clr});
-        textGameOver.push({x: 11, y: 11, color:clr});
+        textGameOver.push({x: offsetX + 7,  y: offsetY + 11, color:clr});
+        textGameOver.push({x: offsetX + 7,  y: offsetY + 12, color:clr});
+        textGameOver.push({x: offsetX + 7,  y: offsetY + 13, color:clr});
+        textGameOver.push({x: offsetX + 7,  y: offsetY + 14, color:clr});
+        textGameOver.push({x: offsetX + 8,  y: offsetY + 15, color:clr});
+        textGameOver.push({x: offsetX + 8,  y: offsetY + 16, color:clr});
+        textGameOver.push({x: offsetX + 9,  y: offsetY + 17, color:clr});
+        textGameOver.push({x: offsetX + 10, y: offsetY +  16, color:clr});
+        textGameOver.push({x: offsetX + 10, y: offsetY +  15, color:clr});
+        textGameOver.push({x: offsetX + 11, y: offsetY +  14, color:clr});
+        textGameOver.push({x: offsetX + 11, y: offsetY +  13, color:clr});
+        textGameOver.push({x: offsetX + 11, y: offsetY +  12, color:clr});
+        textGameOver.push({x: offsetX + 11, y: offsetY +  11, color:clr});
 
         // E
-        textGameOver.push({x: 13, y: 11, color:clr});
-        textGameOver.push({x: 13, y: 12, color:clr});
-        textGameOver.push({x: 13, y: 13, color:clr});
-        textGameOver.push({x: 13, y: 14, color:clr});
-        textGameOver.push({x: 13, y: 15, color:clr});
-        textGameOver.push({x: 13, y: 16, color:clr});
-        textGameOver.push({x: 13, y: 17, color:clr});
-        textGameOver.push({x: 13, y: 11, color:clr});
-        textGameOver.push({x: 14, y: 14, color:clr});
-        textGameOver.push({x: 14, y: 17, color:clr});
-        textGameOver.push({x: 14, y: 11, color:clr});
-        textGameOver.push({x: 15, y: 14, color:clr});
-        textGameOver.push({x: 15, y: 17, color:clr});
-        textGameOver.push({x: 15, y: 11, color:clr});
+        textGameOver.push({x: offsetX + 13, y: offsetY + 11, color:clr});
+        textGameOver.push({x: offsetX + 13, y: offsetY + 12, color:clr});
+        textGameOver.push({x: offsetX + 13, y: offsetY + 13, color:clr});
+        textGameOver.push({x: offsetX + 13, y: offsetY + 14, color:clr});
+        textGameOver.push({x: offsetX + 13, y: offsetY + 15, color:clr});
+        textGameOver.push({x: offsetX + 13, y: offsetY + 16, color:clr});
+        textGameOver.push({x: offsetX + 13, y: offsetY + 17, color:clr});
+        textGameOver.push({x: offsetX + 13, y: offsetY + 11, color:clr});
+        textGameOver.push({x: offsetX + 14, y: offsetY + 14, color:clr});
+        textGameOver.push({x: offsetX + 14, y: offsetY + 17, color:clr});
+        textGameOver.push({x: offsetX + 14, y: offsetY + 11, color:clr});
+        textGameOver.push({x: offsetX + 15, y: offsetY + 14, color:clr});
+        textGameOver.push({x: offsetX + 15, y: offsetY + 17, color:clr});
+        textGameOver.push({x: offsetX + 15, y: offsetY + 11, color:clr});
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        // R
+        textGameOver.push({x: offsetX + 17, y: offsetY + 12, color:clr});
+        textGameOver.push({x: offsetX + 17, y: offsetY + 13, color:clr});
+        textGameOver.push({x: offsetX + 17, y: offsetY + 14, color:clr});
+        textGameOver.push({x: offsetX + 17, y: offsetY + 15, color:clr});
+        textGameOver.push({x: offsetX + 17, y: offsetY + 16, color:clr});
+        textGameOver.push({x: offsetX + 17, y: offsetY + 17, color:clr});
+        textGameOver.push({x: offsetX + 18, y: offsetY + 11, color:clr});
+        textGameOver.push({x: offsetX + 19, y: offsetY + 11, color:clr});
+        textGameOver.push({x: offsetX + 20, y: offsetY + 11, color:clr});
+        textGameOver.push({x: offsetX + 21, y: offsetY + 12, color:clr});
+        textGameOver.push({x: offsetX + 21, y: offsetY + 13, color:clr});
+        textGameOver.push({x: offsetX + 21, y: offsetY + 12, color:clr});
+        textGameOver.push({x: offsetX + 20, y: offsetY + 14, color:clr});
+        textGameOver.push({x: offsetX + 19, y: offsetY + 14, color:clr});
+        textGameOver.push({x: offsetX + 18, y: offsetY + 14, color:clr});
+        textGameOver.push({x: offsetX + 19, y: offsetY + 15, color:clr});
+        textGameOver.push({x: offsetX + 20, y: offsetY + 16, color:clr});
+        textGameOver.push({x: offsetX + 21, y: offsetY + 17, color:clr});
 
 	}
 
