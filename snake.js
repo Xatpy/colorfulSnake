@@ -34,6 +34,8 @@ $(document).on('ready', function() {
 	var textGameOver = [];
 	var textPause = [];
 
+	var record = -1;
+
 	//El juego tiene la dirección "right" por defecto y se ejecuta la función paint
 	//dependiendo el nivel que hayas configurado arriba
 	function init()
@@ -45,6 +47,8 @@ $(document).on('ready', function() {
 		generateTextPause();
 
 		resetGame();
+
+		checkRecord(0);
 	}
 
 	function resetGame() {
@@ -102,19 +106,44 @@ $(document).on('ready', function() {
 		return false;
 	}
 
+	function checkPosition(posRnd) {
+		var snakeLength;
+		for (var i = 0; i < snakeLength; ++i) {
+			if ( (snake[i].x === posRnd.x) && (snake[i].y === posRnd.y) ) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	function createRandomPosition() {
+		var pos = {};
+		pos.x = Math.round(Math.random() * (width - cellWidth) / cellWidth);
+		pos.y = Math.round(Math.random() * (height - cellWidth) / cellWidth);
+		return pos;
+	}
+
 	function createRandomListFood() {
 		listFood = [];
 		var colorSnk;
 		for (var i = 0; i < numFood; ++i) {
 			var colorRnd = createRandomColor();
+			// Check color
 			while (existColor(colorRnd)) {
 				colorRnd = createRandomColor();
 			}
-			listFood.push( {
-					x: Math.round(Math.random() * (width - cellWidth) / cellWidth),
-					y: Math.round(Math.random() * (height - cellWidth) / cellWidth),
-					color: colorRnd
-				});
+			// Check position
+			var posRnd = createRandomPosition();
+			while (checkPosition(posRnd)) {
+				posRnd = createRandomPosition();
+			}
+
+			listFood.push ( {
+				x: 		posRnd.x,
+				y: 		posRnd.y,
+				color: 	colorRnd
+			});
+
 			if (i === 0) {
 				snakeColor = colorRnd;
 			}
@@ -139,33 +168,30 @@ $(document).on('ready', function() {
 
 	function update() {
 		if (state === "playing") {
-			paint();
+			play();
 		} else if (state === "pause") {
 			pauseState();
 		} else if (state === "gameOver") {
 			gameOver();
 		}
+		paint();
 	}
 
 	function pauseState() {
-		console.log('pause');
 		if (d === "enter") {
 			state = "playing";
-			//init();
 			resetGame();
 		}
 	}
 
 	function gameOver() {
-		console.log("gameOver...pressEnter");
 		if (d === "enter") {
 			state = "playing";
-			//init();
 			resetGame();
 		}
 	}
 
-	function paint() {
+	function play() {
 		context.fillStyle = background;
 		context.fillRect(0, 0, width, height);
 		context.strokeStyle = border;
@@ -200,21 +226,24 @@ $(document).on('ready', function() {
 
 			if (nx == -1 || nx == numCellsWidth || ny == -1 || ny == numCellsHeight || checkCollision(nx, ny, snake)) {
 				//init();
+				debugger
 				state = "gameOver";
-				console.log(d);
+				checkRecord(score);
 				return;
 			}
 
 			//if(nx == food.x && ny == food.y) {
 			var hasEaten = hasEatenFood(nx,ny);
 			if (hasEaten !== 0) {
-				if (hasEaten === 1) {
-					console.log('correct');
-				} else {
-					console.log('incorrect');
-					state = "pause";
+				if (hasEaten === -1) {
+					//incorrect food
 					state = "gameOver";
-					//init();
+					checkRecord(score);
+					return;
+				} else {
+					//correct food
+					debugger
+					level += 10; 
 				}
 
 				var tail = {
@@ -232,6 +261,13 @@ $(document).on('ready', function() {
 
 			snake.unshift(tail);
 		}
+	}
+
+	function paint() {
+		context.fillStyle = background;
+		context.fillRect(0, 0, width, height);
+		context.strokeStyle = border;
+		context.strokeRect(0, 0, width, height);
 
 		if (state === "gameOver") {
 			paintGameOver();
@@ -450,4 +486,11 @@ $(document).on('ready', function() {
 			d = "enter";
 		}
 	});
+
+	function checkRecord(punt) {
+		if (punt > record) {
+			var text = 'Record: ' + punt;
+			$( "#record" ).text( text );
+		}
+	}
 });

@@ -7,6 +7,7 @@
 	<style>
 	body {
 		background-color: 'black';
+		text-align: center;
 	}
 	.game
 	{
@@ -46,11 +47,12 @@
 			 "<span style='color:" + createRandomColor() + "'>e</span>";
 
 			$( ".head" ).append( txt );
-
 		</script>
 		
 		<div class="game">
-		<canvas id="snake" width="400" height="400"></canvas>
+			<canvas id="snake" width="400" height="400"></canvas>
 		</div>
+
+		<h2 id="record"></h2>
 	</body>
 </html>
