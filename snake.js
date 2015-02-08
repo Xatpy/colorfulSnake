@@ -98,10 +98,19 @@ $(document).on('ready', function() {
 
 
 	function existColor(color) {
+		var range = 1000000;
+
 		for (var i = 0; i < listFood.length; ++i) {
-			if (listFood[i].color === color) {
+			//if (listFood[i].color === color) {
+			var numA = parseInt(listFood[i].color.slice(1,7),16);
+			var numB = parseInt(color.slice(1,7),16);
+			var rest = Math.abs(numA - numB);
+			debugger
+			if (rest < range) {
+				console.log('EXIST');
 				return true;
 			}
+			//console.log('NO EXIT ' + rest);
 		}
 		return false;
 	}
@@ -225,8 +234,6 @@ $(document).on('ready', function() {
 		if (!pause) {
 
 			if (nx == -1 || nx == numCellsWidth || ny == -1 || ny == numCellsHeight || checkCollision(nx, ny, snake)) {
-				//init();
-				debugger
 				state = "gameOver";
 				checkRecord(score);
 				return;
@@ -242,8 +249,7 @@ $(document).on('ready', function() {
 					return;
 				} else {
 					//correct food
-					debugger
-					level += 10; 
+					//level += 10; 
 				}
 
 				var tail = {
