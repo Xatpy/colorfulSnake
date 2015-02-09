@@ -7,11 +7,6 @@ $(document).on('ready', function() {
 	var width = $("#snake").width();
 	var height = $("#snake").height();
 
-<<<<<<< HEAD
-	//Definimos algunas variables para configurar nuestro juego
-	var cellWidth = 10;
-	var d; 		//direction
-=======
 	var numCellsWidth, numCellsHeight;
 
 	var state = "playing";
@@ -21,7 +16,6 @@ $(document).on('ready', function() {
 	var cellWidth = 10;
 	var d; 		//direction
 	var old_direction;
->>>>>>> 6c7a58a433551633cfaaabc1987aae3db9c58e4a
 	
 	var food;
 	var listFood = [];
@@ -37,23 +31,15 @@ $(document).on('ready', function() {
 	//Creamos nuestra víbora
 	var snake;
 
-<<<<<<< HEAD
-=======
 	var textGameOver = [];
 	var textPause = [];
 
 	var record = -1;
 
->>>>>>> 6c7a58a433551633cfaaabc1987aae3db9c58e4a
 	//El juego tiene la dirección "right" por defecto y se ejecuta la función paint
 	//dependiendo el nivel que hayas configurado arriba
 	function init()
 	{
-<<<<<<< HEAD
-		d = "right";
-		createSnake();
-		createFood();
-=======
 		numCellsWidth = width / cellWidth;
 		numCellsHeight = height / cellWidth;
 
@@ -71,7 +57,6 @@ $(document).on('ready', function() {
 
 		createSnake();
 		//createFood();
->>>>>>> 6c7a58a433551633cfaaabc1987aae3db9c58e4a
 		createRandomListFood();
 		score = 0;
 		if (typeof gameLoop != "undefined") {
@@ -79,11 +64,7 @@ $(document).on('ready', function() {
 		}
 		 
 		//game speed
-<<<<<<< HEAD
-		gameLoop = setInterval(paint, 1000 / level);
-=======
 		gameLoop = setInterval(update, 1000 / level);
->>>>>>> 6c7a58a433551633cfaaabc1987aae3db9c58e4a
 	}
  
 	init();
@@ -117,12 +98,6 @@ $(document).on('ready', function() {
 
 
 	function existColor(color) {
-<<<<<<< HEAD
-		for (var i = 0; i < listFood.length; ++i) {
-			if (listFood[i].color === color) {
-				return true;
-			}
-=======
 		var range = 1000000;
 
 		for (var i = 0; i < listFood.length; ++i) {
@@ -136,13 +111,10 @@ $(document).on('ready', function() {
 				return true;
 			}
 			//console.log('NO EXIT ' + rest);
->>>>>>> 6c7a58a433551633cfaaabc1987aae3db9c58e4a
 		}
 		return false;
 	}
 
-<<<<<<< HEAD
-=======
 	function checkPosition(posRnd) {
 		var snakeLength;
 		for (var i = 0; i < snakeLength; ++i) {
@@ -160,22 +132,11 @@ $(document).on('ready', function() {
 		return pos;
 	}
 
->>>>>>> 6c7a58a433551633cfaaabc1987aae3db9c58e4a
 	function createRandomListFood() {
 		listFood = [];
 		var colorSnk;
 		for (var i = 0; i < numFood; ++i) {
 			var colorRnd = createRandomColor();
-<<<<<<< HEAD
-			while (existColor(colorRnd)) {
-				colorRnd = createRandomColor();
-			}
-			listFood.push( {
-					x: Math.round(Math.random() * (width - cellWidth) / cellWidth),
-					y: Math.round(Math.random() * (height - cellWidth) / cellWidth),
-					color: colorRnd
-				});
-=======
 			// Check color
 			while (existColor(colorRnd)) {
 				colorRnd = createRandomColor();
@@ -192,7 +153,6 @@ $(document).on('ready', function() {
 				color: 	colorRnd
 			});
 
->>>>>>> 6c7a58a433551633cfaaabc1987aae3db9c58e4a
 			if (i === 0) {
 				snakeColor = colorRnd;
 			}
@@ -204,10 +164,6 @@ $(document).on('ready', function() {
 	//         -1 incorrect color
 	function hasEatenFood(nx, ny) {
 		for (var i = 0; i < numFood; i++) {
-<<<<<<< HEAD
-			debugger
-=======
->>>>>>> 6c7a58a433551633cfaaabc1987aae3db9c58e4a
 			if ( (nx === listFood[i].x) && (ny === listFood[i].y) ) {
 				if (listFood[i].color === snakeColor) {
 					return 1
@@ -219,11 +175,6 @@ $(document).on('ready', function() {
 		return 0;
 	}
 
-<<<<<<< HEAD
-	//Dibujamos la víbora
-	function paint()
-	{
-=======
 	function update() {
 		if (state === "playing") {
 			play();
@@ -250,7 +201,6 @@ $(document).on('ready', function() {
 	}
 
 	function play() {
->>>>>>> 6c7a58a433551633cfaaabc1987aae3db9c58e4a
 		context.fillStyle = background;
 		context.fillRect(0, 0, width, height);
 		context.strokeStyle = border;
@@ -259,47 +209,6 @@ $(document).on('ready', function() {
 		var nx = snake[0].x;
 		var ny = snake[0].y;
 
-<<<<<<< HEAD
-		if (d == "right") {
-			nx++;
-		} else if (d == "left") {
-			nx--;
-		} else if (d == "up") {
-			ny--;
-		} else if (d == "down") {
-			ny++;
-		}
-
-		if (nx == -1 || nx == width / cellWidth || ny == -1 || ny == height / cellWidth || checkCollision(nx, ny, snake)) {
-			init();
-			return;
-		}
-
-		//if(nx == food.x && ny == food.y) {
-		var hasEaten = hasEatenFood(nx,ny);
-		if (hasEaten !== 0) {
-			if (hasEaten === 1) {
-				console.log('correct');
-			} else {
-				console.log('incorrect');
-				init();
-			}
-
-			var tail = {
-				x: nx,
-				y: ny
-			};
-			score++;
-			//createFood();
-			createRandomListFood();
-		} else {
-			var tail = snake.pop();	 
-			tail.x = nx;
-			tail.y = ny;
-		}
-
-		snake.unshift(tail);
-=======
 		//pause = false;
 
 		if (d === "enter") {
@@ -369,7 +278,6 @@ $(document).on('ready', function() {
 		if (state === "gameOver") {
 			paintGameOver();
 		}
->>>>>>> 6c7a58a433551633cfaaabc1987aae3db9c58e4a
 
 		for (var i = 0; i < snake.length; i++) {
 			var c = snake[i];
@@ -385,8 +293,6 @@ $(document).on('ready', function() {
 		}
 	}
 
-<<<<<<< HEAD
-=======
 	function generateTextGameOver() {
 
 		var offsetX = 9;
@@ -549,7 +455,6 @@ $(document).on('ready', function() {
 		}
 	}
 
->>>>>>> 6c7a58a433551633cfaaabc1987aae3db9c58e4a
 	//Pintamos la celda
 	function paintCell(x, y, color)
 	{
@@ -582,11 +487,6 @@ $(document).on('ready', function() {
 			d = "right";
 		} else if (key == "40" && d != "up") {
 			d = "down";
-<<<<<<< HEAD
-		}
-	});
-});
-=======
 		} else if (key == "13" && d != "enter") {
 			old_direction = d;
 			d = "enter";
@@ -600,4 +500,3 @@ $(document).on('ready', function() {
 		}
 	}
 });
->>>>>>> 6c7a58a433551633cfaaabc1987aae3db9c58e4a
