@@ -7,9 +7,21 @@ $(document).on('ready', function() {
 	var width = $("#snake").width();
 	var height = $("#snake").height();
 
+<<<<<<< HEAD
 	//Definimos algunas variables para configurar nuestro juego
 	var cellWidth = 10;
 	var d; 		//direction
+=======
+	var numCellsWidth, numCellsHeight;
+
+	var state = "playing";
+	var pause = false;
+
+	//Definimos algunas variables para configurar nuestro juego
+	var cellWidth = 10;
+	var d; 		//direction
+	var old_direction;
+>>>>>>> 6c7a58a433551633cfaaabc1987aae3db9c58e4a
 	
 	var food;
 	var listFood = [];
@@ -25,13 +37,41 @@ $(document).on('ready', function() {
 	//Creamos nuestra víbora
 	var snake;
 
+<<<<<<< HEAD
+=======
+	var textGameOver = [];
+	var textPause = [];
+
+	var record = -1;
+
+>>>>>>> 6c7a58a433551633cfaaabc1987aae3db9c58e4a
 	//El juego tiene la dirección "right" por defecto y se ejecuta la función paint
 	//dependiendo el nivel que hayas configurado arriba
 	function init()
 	{
+<<<<<<< HEAD
 		d = "right";
 		createSnake();
 		createFood();
+=======
+		numCellsWidth = width / cellWidth;
+		numCellsHeight = height / cellWidth;
+
+		generateTextGameOver();
+		generateTextPause();
+
+		resetGame();
+
+		checkRecord(0);
+	}
+
+	function resetGame() {
+		d = "right";
+		old_direction = undefined;
+
+		createSnake();
+		//createFood();
+>>>>>>> 6c7a58a433551633cfaaabc1987aae3db9c58e4a
 		createRandomListFood();
 		score = 0;
 		if (typeof gameLoop != "undefined") {
@@ -39,7 +79,11 @@ $(document).on('ready', function() {
 		}
 		 
 		//game speed
+<<<<<<< HEAD
 		gameLoop = setInterval(paint, 1000 / level);
+=======
+		gameLoop = setInterval(update, 1000 / level);
+>>>>>>> 6c7a58a433551633cfaaabc1987aae3db9c58e4a
 	}
  
 	init();
@@ -73,19 +117,56 @@ $(document).on('ready', function() {
 
 
 	function existColor(color) {
+<<<<<<< HEAD
 		for (var i = 0; i < listFood.length; ++i) {
 			if (listFood[i].color === color) {
+				return true;
+			}
+=======
+		var range = 1000000;
+
+		for (var i = 0; i < listFood.length; ++i) {
+			//if (listFood[i].color === color) {
+			var numA = parseInt(listFood[i].color.slice(1,7),16);
+			var numB = parseInt(color.slice(1,7),16);
+			var rest = Math.abs(numA - numB);
+			debugger
+			if (rest < range) {
+				console.log('EXIST');
+				return true;
+			}
+			//console.log('NO EXIT ' + rest);
+>>>>>>> 6c7a58a433551633cfaaabc1987aae3db9c58e4a
+		}
+		return false;
+	}
+
+<<<<<<< HEAD
+=======
+	function checkPosition(posRnd) {
+		var snakeLength;
+		for (var i = 0; i < snakeLength; ++i) {
+			if ( (snake[i].x === posRnd.x) && (snake[i].y === posRnd.y) ) {
 				return true;
 			}
 		}
 		return false;
 	}
 
+	function createRandomPosition() {
+		var pos = {};
+		pos.x = Math.round(Math.random() * (width - cellWidth) / cellWidth);
+		pos.y = Math.round(Math.random() * (height - cellWidth) / cellWidth);
+		return pos;
+	}
+
+>>>>>>> 6c7a58a433551633cfaaabc1987aae3db9c58e4a
 	function createRandomListFood() {
 		listFood = [];
 		var colorSnk;
 		for (var i = 0; i < numFood; ++i) {
 			var colorRnd = createRandomColor();
+<<<<<<< HEAD
 			while (existColor(colorRnd)) {
 				colorRnd = createRandomColor();
 			}
@@ -94,6 +175,24 @@ $(document).on('ready', function() {
 					y: Math.round(Math.random() * (height - cellWidth) / cellWidth),
 					color: colorRnd
 				});
+=======
+			// Check color
+			while (existColor(colorRnd)) {
+				colorRnd = createRandomColor();
+			}
+			// Check position
+			var posRnd = createRandomPosition();
+			while (checkPosition(posRnd)) {
+				posRnd = createRandomPosition();
+			}
+
+			listFood.push ( {
+				x: 		posRnd.x,
+				y: 		posRnd.y,
+				color: 	colorRnd
+			});
+
+>>>>>>> 6c7a58a433551633cfaaabc1987aae3db9c58e4a
 			if (i === 0) {
 				snakeColor = colorRnd;
 			}
@@ -105,7 +204,10 @@ $(document).on('ready', function() {
 	//         -1 incorrect color
 	function hasEatenFood(nx, ny) {
 		for (var i = 0; i < numFood; i++) {
+<<<<<<< HEAD
 			debugger
+=======
+>>>>>>> 6c7a58a433551633cfaaabc1987aae3db9c58e4a
 			if ( (nx === listFood[i].x) && (ny === listFood[i].y) ) {
 				if (listFood[i].color === snakeColor) {
 					return 1
@@ -117,9 +219,38 @@ $(document).on('ready', function() {
 		return 0;
 	}
 
+<<<<<<< HEAD
 	//Dibujamos la víbora
 	function paint()
 	{
+=======
+	function update() {
+		if (state === "playing") {
+			play();
+		} else if (state === "pause") {
+			pauseState();
+		} else if (state === "gameOver") {
+			gameOver();
+		}
+		paint();
+	}
+
+	function pauseState() {
+		if (d === "enter") {
+			state = "playing";
+			resetGame();
+		}
+	}
+
+	function gameOver() {
+		if (d === "enter") {
+			state = "playing";
+			resetGame();
+		}
+	}
+
+	function play() {
+>>>>>>> 6c7a58a433551633cfaaabc1987aae3db9c58e4a
 		context.fillStyle = background;
 		context.fillRect(0, 0, width, height);
 		context.strokeStyle = border;
@@ -128,6 +259,7 @@ $(document).on('ready', function() {
 		var nx = snake[0].x;
 		var ny = snake[0].y;
 
+<<<<<<< HEAD
 		if (d == "right") {
 			nx++;
 		} else if (d == "left") {
@@ -167,6 +299,77 @@ $(document).on('ready', function() {
 		}
 
 		snake.unshift(tail);
+=======
+		//pause = false;
+
+		if (d === "enter") {
+			pause = true;
+		} else {
+			if (old_direction !== undefined) {
+				d = old_direction;
+				old_direction = undefined;
+				pause = false;
+			}
+
+			if (d == "right") {
+				nx++;
+			} else if (d == "left") {
+				nx--;
+			} else if (d == "up") {
+				ny--;
+			} else if (d == "down") {
+				ny++;
+			} 
+		}
+
+		if (!pause) {
+
+			if (nx == -1 || nx == numCellsWidth || ny == -1 || ny == numCellsHeight || checkCollision(nx, ny, snake)) {
+				state = "gameOver";
+				checkRecord(score);
+				return;
+			}
+
+			//if(nx == food.x && ny == food.y) {
+			var hasEaten = hasEatenFood(nx,ny);
+			if (hasEaten !== 0) {
+				if (hasEaten === -1) {
+					//incorrect food
+					state = "gameOver";
+					checkRecord(score);
+					return;
+				} else {
+					//correct food
+					//level += 10; 
+				}
+
+				var tail = {
+					x: nx,
+					y: ny
+				};
+				score++;
+				//createFood();
+				createRandomListFood();
+			} else {
+				var tail = snake.pop();	 
+				tail.x = nx;
+				tail.y = ny;
+			}
+
+			snake.unshift(tail);
+		}
+	}
+
+	function paint() {
+		context.fillStyle = background;
+		context.fillRect(0, 0, width, height);
+		context.strokeStyle = border;
+		context.strokeRect(0, 0, width, height);
+
+		if (state === "gameOver") {
+			paintGameOver();
+		}
+>>>>>>> 6c7a58a433551633cfaaabc1987aae3db9c58e4a
 
 		for (var i = 0; i < snake.length; i++) {
 			var c = snake[i];
@@ -182,6 +385,171 @@ $(document).on('ready', function() {
 		}
 	}
 
+<<<<<<< HEAD
+=======
+	function generateTextGameOver() {
+
+		var offsetX = 9;
+		var offsetY = 9;
+		var clr = 'black';
+
+		// G
+		textGameOver.push({x: offsetX + 2, y: offsetY + 1, color:clr});
+		textGameOver.push({x: offsetX + 3, y: offsetY + 1, color:clr});
+		textGameOver.push({x: offsetX + 4, y: offsetY + 1, color:clr});
+		textGameOver.push({x: offsetX + 5, y: offsetY + 2, color:clr});
+		textGameOver.push({x: offsetX + 1, y: offsetY + 2, color:clr});
+		textGameOver.push({x: offsetX + 1, y: offsetY + 3, color:clr});
+		textGameOver.push({x: offsetX + 1, y: offsetY + 4, color:clr});
+		textGameOver.push({x: offsetX + 1, y: offsetY + 5, color:clr});
+		textGameOver.push({x: offsetX + 1, y: offsetY + 6, color:clr});
+		textGameOver.push({x: offsetX + 2, y: offsetY + 7, color:clr});
+		textGameOver.push({x: offsetX + 3, y: offsetY + 7, color:clr});
+		textGameOver.push({x: offsetX + 4, y: offsetY + 7, color:clr});
+        textGameOver.push({x: offsetX + 5, y: offsetY + 6, color:clr});
+        textGameOver.push({x: offsetX + 5, y: offsetY + 4, color:clr});
+        textGameOver.push({x: offsetX + 5, y: offsetY + 5, color:clr});
+        textGameOver.push({x: offsetX + 4, y: offsetY + 4, color:clr});
+        textGameOver.push({x: offsetX + 3, y: offsetY + 4, color:clr});
+
+        // A
+        textGameOver.push({x: offsetX + 8, y: offsetY + 1, color:clr});
+        textGameOver.push({x: offsetX + 7, y: offsetY + 2, color:clr});
+        textGameOver.push({x: offsetX + 7, y: offsetY + 3, color:clr});
+        textGameOver.push({x: offsetX + 7, y: offsetY + 4, color:clr});
+        textGameOver.push({x: offsetX + 7, y: offsetY + 5, color:clr});
+        textGameOver.push({x: offsetX + 7, y: offsetY + 6, color:clr});
+        textGameOver.push({x: offsetX + 7, y: offsetY + 7, color:clr});
+        textGameOver.push({x: offsetX + 9, y: offsetY + 1, color:clr});
+        textGameOver.push({x: offsetX + 10,y: offsetY + 1, color:clr});        
+        textGameOver.push({x: offsetX + 11,y: offsetY + 2, color:clr});
+        textGameOver.push({x: offsetX + 11,y: offsetY + 3, color:clr});
+        textGameOver.push({x: offsetX + 11,y: offsetY + 4, color:clr});
+        textGameOver.push({x: offsetX + 11,y: offsetY + 5, color:clr});
+        textGameOver.push({x: offsetX + 11,y: offsetY + 6, color:clr});
+        textGameOver.push({x: offsetX + 11,y: offsetY + 7, color:clr});
+        textGameOver.push({x: offsetX + 8, y: offsetY + 4, color:clr});        
+        textGameOver.push({x: offsetX + 9, y: offsetY + 4, color:clr});
+        textGameOver.push({x: offsetX + 10,y: offsetY + 4, color:clr});
+
+        // M
+        textGameOver.push({x: offsetX + 13, y: offsetY + 1, color:clr});
+        textGameOver.push({x: offsetX + 13, y: offsetY + 2, color:clr});
+        textGameOver.push({x: offsetX + 13, y: offsetY + 3, color:clr});
+        textGameOver.push({x: offsetX + 13, y: offsetY + 4, color:clr});
+        textGameOver.push({x: offsetX + 13, y: offsetY + 5, color:clr});
+        textGameOver.push({x: offsetX + 13, y: offsetY + 6, color:clr});
+        textGameOver.push({x: offsetX + 13, y: offsetY + 7, color:clr});
+        textGameOver.push({x: offsetX + 14, y: offsetY + 2, color:clr});
+        textGameOver.push({x: offsetX + 15, y: offsetY + 3, color:clr});
+        textGameOver.push({x: offsetX + 16, y: offsetY + 2, color:clr});
+        textGameOver.push({x: offsetX + 17, y: offsetY + 1, color:clr});
+        textGameOver.push({x: offsetX + 17, y: offsetY + 1, color:clr});
+        textGameOver.push({x: offsetX + 17, y: offsetY + 2, color:clr});
+        textGameOver.push({x: offsetX + 17, y: offsetY + 3, color:clr});
+        textGameOver.push({x: offsetX + 17, y: offsetY + 4, color:clr});
+        textGameOver.push({x: offsetX + 17, y: offsetY + 5, color:clr});
+        textGameOver.push({x: offsetX + 17, y: offsetY + 6, color:clr});
+        textGameOver.push({x: offsetX + 17, y: offsetY + 7, color:clr});
+
+        // E
+        textGameOver.push({x: offsetX + 19, y: offsetY + 1, color:clr});
+        textGameOver.push({x: offsetX + 19, y: offsetY + 2, color:clr});
+        textGameOver.push({x: offsetX + 19, y: offsetY + 3, color:clr});
+        textGameOver.push({x: offsetX + 19, y: offsetY + 4, color:clr});
+        textGameOver.push({x: offsetX + 19, y: offsetY + 5, color:clr});
+        textGameOver.push({x: offsetX + 19, y: offsetY + 6, color:clr});
+        textGameOver.push({x: offsetX + 19, y: offsetY + 7, color:clr});
+        textGameOver.push({x: offsetX + 20, y: offsetY + 1, color:clr});
+        textGameOver.push({x: offsetX + 20, y: offsetY + 4, color:clr});
+        textGameOver.push({x: offsetX + 20, y: offsetY + 7, color:clr});
+        textGameOver.push({x: offsetX + 21, y: offsetY + 1, color:clr});
+        textGameOver.push({x: offsetX + 21, y: offsetY + 4, color:clr});
+        textGameOver.push({x: offsetX + 21, y: offsetY + 7, color:clr});
+
+        //O 
+        textGameOver.push({x: offsetX + 2, y: offsetY + 11, color:clr});
+        textGameOver.push({x: offsetX + 1, y: offsetY + 12, color:clr});
+        textGameOver.push({x: offsetX + 1, y: offsetY + 13, color:clr});
+        textGameOver.push({x: offsetX + 1, y: offsetY + 14, color:clr});
+        textGameOver.push({x: offsetX + 1, y: offsetY + 15, color:clr});
+        textGameOver.push({x: offsetX + 1, y: offsetY + 16, color:clr});
+        textGameOver.push({x: offsetX + 2, y: offsetY + 17, color:clr});
+        textGameOver.push({x: offsetX + 3, y: offsetY + 11, color:clr});
+        textGameOver.push({x: offsetX + 4, y: offsetY + 11, color:clr});
+        textGameOver.push({x: offsetX + 5, y: offsetY + 12, color:clr});
+        textGameOver.push({x: offsetX + 5, y: offsetY + 13, color:clr});
+        textGameOver.push({x: offsetX + 5, y: offsetY + 14, color:clr});
+        textGameOver.push({x: offsetX + 5, y: offsetY + 15, color:clr});
+        textGameOver.push({x: offsetX + 5, y: offsetY + 16, color:clr});
+        textGameOver.push({x: offsetX + 4, y: offsetY + 17, color:clr});
+        textGameOver.push({x: offsetX + 3, y: offsetY + 17, color:clr});
+
+        // V
+        textGameOver.push({x: offsetX + 7,  y: offsetY + 11, color:clr});
+        textGameOver.push({x: offsetX + 7,  y: offsetY + 12, color:clr});
+        textGameOver.push({x: offsetX + 7,  y: offsetY + 13, color:clr});
+        textGameOver.push({x: offsetX + 7,  y: offsetY + 14, color:clr});
+        textGameOver.push({x: offsetX + 8,  y: offsetY + 15, color:clr});
+        textGameOver.push({x: offsetX + 8,  y: offsetY + 16, color:clr});
+        textGameOver.push({x: offsetX + 9,  y: offsetY + 17, color:clr});
+        textGameOver.push({x: offsetX + 10, y: offsetY +  16, color:clr});
+        textGameOver.push({x: offsetX + 10, y: offsetY +  15, color:clr});
+        textGameOver.push({x: offsetX + 11, y: offsetY +  14, color:clr});
+        textGameOver.push({x: offsetX + 11, y: offsetY +  13, color:clr});
+        textGameOver.push({x: offsetX + 11, y: offsetY +  12, color:clr});
+        textGameOver.push({x: offsetX + 11, y: offsetY +  11, color:clr});
+
+        // E
+        textGameOver.push({x: offsetX + 13, y: offsetY + 11, color:clr});
+        textGameOver.push({x: offsetX + 13, y: offsetY + 12, color:clr});
+        textGameOver.push({x: offsetX + 13, y: offsetY + 13, color:clr});
+        textGameOver.push({x: offsetX + 13, y: offsetY + 14, color:clr});
+        textGameOver.push({x: offsetX + 13, y: offsetY + 15, color:clr});
+        textGameOver.push({x: offsetX + 13, y: offsetY + 16, color:clr});
+        textGameOver.push({x: offsetX + 13, y: offsetY + 17, color:clr});
+        textGameOver.push({x: offsetX + 13, y: offsetY + 11, color:clr});
+        textGameOver.push({x: offsetX + 14, y: offsetY + 14, color:clr});
+        textGameOver.push({x: offsetX + 14, y: offsetY + 17, color:clr});
+        textGameOver.push({x: offsetX + 14, y: offsetY + 11, color:clr});
+        textGameOver.push({x: offsetX + 15, y: offsetY + 14, color:clr});
+        textGameOver.push({x: offsetX + 15, y: offsetY + 17, color:clr});
+        textGameOver.push({x: offsetX + 15, y: offsetY + 11, color:clr});
+
+        // R
+        textGameOver.push({x: offsetX + 17, y: offsetY + 12, color:clr});
+        textGameOver.push({x: offsetX + 17, y: offsetY + 13, color:clr});
+        textGameOver.push({x: offsetX + 17, y: offsetY + 14, color:clr});
+        textGameOver.push({x: offsetX + 17, y: offsetY + 15, color:clr});
+        textGameOver.push({x: offsetX + 17, y: offsetY + 16, color:clr});
+        textGameOver.push({x: offsetX + 17, y: offsetY + 17, color:clr});
+        textGameOver.push({x: offsetX + 18, y: offsetY + 11, color:clr});
+        textGameOver.push({x: offsetX + 19, y: offsetY + 11, color:clr});
+        textGameOver.push({x: offsetX + 20, y: offsetY + 11, color:clr});
+        textGameOver.push({x: offsetX + 21, y: offsetY + 12, color:clr});
+        textGameOver.push({x: offsetX + 21, y: offsetY + 13, color:clr});
+        textGameOver.push({x: offsetX + 21, y: offsetY + 12, color:clr});
+        textGameOver.push({x: offsetX + 20, y: offsetY + 14, color:clr});
+        textGameOver.push({x: offsetX + 19, y: offsetY + 14, color:clr});
+        textGameOver.push({x: offsetX + 18, y: offsetY + 14, color:clr});
+        textGameOver.push({x: offsetX + 19, y: offsetY + 15, color:clr});
+        textGameOver.push({x: offsetX + 20, y: offsetY + 16, color:clr});
+        textGameOver.push({x: offsetX + 21, y: offsetY + 17, color:clr});
+
+	}
+
+	function generateTextPause() {
+
+	}
+
+	function paintGameOver() {
+		var lng = textGameOver.length;
+		for (var i = 0; i < lng; ++i) {
+			paintCell(textGameOver[i].x, textGameOver[i].y, textGameOver[i].color);
+		}
+	}
+
+>>>>>>> 6c7a58a433551633cfaaabc1987aae3db9c58e4a
 	//Pintamos la celda
 	function paintCell(x, y, color)
 	{
@@ -214,6 +582,22 @@ $(document).on('ready', function() {
 			d = "right";
 		} else if (key == "40" && d != "up") {
 			d = "down";
+<<<<<<< HEAD
 		}
 	});
 });
+=======
+		} else if (key == "13" && d != "enter") {
+			old_direction = d;
+			d = "enter";
+		}
+	});
+
+	function checkRecord(punt) {
+		if (punt > record) {
+			var text = 'Record: ' + punt;
+			$( "#record" ).text( text );
+		}
+	}
+});
+>>>>>>> 6c7a58a433551633cfaaabc1987aae3db9c58e4a
