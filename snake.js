@@ -36,10 +36,14 @@ $(document).on('ready', function() {
 
 	var record = -1;
 
+	var is_touch_device = null;
+
 	//El juego tiene la dirección "right" por defecto y se ejecuta la función paint
 	//dependiendo el nivel que hayas configurado arriba
 	function init()
 	{
+		initListeners();
+
 		numCellsWidth = width / cellWidth;
 		numCellsHeight = height / cellWidth;
 
@@ -68,6 +72,46 @@ $(document).on('ready', function() {
 	}
  
 	init();
+
+	function initListeners() {
+         is_touch_device = 'ontouchstart' in document.documentElement;
+
+        // attach the touchstart, touchmove, touchend event listeners.
+        canvas.addEventListener('touchstart', draw, false);
+        canvas.addEventListener('touchmove', draw, false);
+        canvas.addEventListener('touchend', draw, false);
+
+        // prevent elastic scrolling
+        canvas.addEventListener('touchmove', function (event) {
+           event.preventDefault();
+        }, false); 
+	}
+
+    function draw(event) {
+
+       // get the touch coordinates.  Using the first touch in case of multi-touch
+       var coors = {
+          x: event.targetTouches[0].pageX,
+          y: event.targetTouches[0].pageY
+       };
+
+       // Now we need to get the offset of the canvas location
+       var obj = sigCanvas;
+
+       if (obj.offsetParent) {
+          // Every time we find a new object, we add its offsetLeft and offsetTop to curleft and curtop.
+          do {
+             coors.x -= obj.offsetLeft;
+             coors.y -= obj.offsetTop;
+          }
+		  // The while loop can be "while (obj = obj.offsetParent)" only, which does return null
+		  // when null is passed back, but that creates a warning in some editors (i.e. VS2010).
+          while ((obj = obj.offsetParent) != null);
+       }
+
+       // pass the coordinates to the appropriate handler
+       drawer[event.type](coors);
+    }
 
 	//Creamos la víbora
 	function createSnake()
@@ -105,12 +149,10 @@ $(document).on('ready', function() {
 			var numA = parseInt(listFood[i].color.slice(1,7),16);
 			var numB = parseInt(color.slice(1,7),16);
 			var rest = Math.abs(numA - numB);
-			debugger
+
 			if (rest < range) {
-				console.log('EXIST');
 				return true;
 			}
-			//console.log('NO EXIT ' + rest);
 		}
 		return false;
 	}
@@ -175,7 +217,68 @@ $(document).on('ready', function() {
 		return 0;
 	}
 
+	      // works out the X, Y position of the click inside the canvas from the X, Y position on the page
+      function getPosition(mouseEvent, sigCanvas) {
+
+         var x, y;
+         if (mouseEvent.pageX != undefined && mouseEvent.pageY != undefined) {
+            x = mouseEvent.pageX;
+            y = mouseEvent.pageY;
+         } else {
+            x = mouseEvent.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+            y = mouseEvent.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+         }
+ 
+         return { X: x - canvas.offsetLeft, Y: y - canvas.offsetTop };
+      }
+    
+    function checkQuadrant(position) {
+
+    	//tengo que calcular el cuadrante que ha pulsado en función de la posicion en función de la pulsación
+    	//para luego lanzar una pulsación de la de las flechas
+    	//diagonal primera, las coordenadas son iguales. 1,1; 2,2; 3,3; 4,4
+    	//segunda diagonal, las coordenadas son 0,400; 1,399; 2, 398; 3;397
+
+    	var he = canvas.height;
+    	var wi = canvas.width;
+
+    	var p1 = {X: 0,  Y: he },
+    		p2 = {X: wi, Y: 0  };
+
+       	var d1 = p1 - p2;
+
+    	// he
+    	if (position.X < (wi / 2)) {
+    		if (position.Y > (he / 2) ) {
+    			d = "up";
+    		} else {
+    			d = "down"
+    		}
+    	} else {
+    		if (position.Y > (he / 2) ) {
+    			d = "right";
+    		} else {
+    			d = "left"
+    		}
+    	}
+
+
+    	return;
+    }
+
+	function input() {
+         var sigCanvas = document.getElementById("canvasSignature");
+
+		$("#snake").mousedown(function (mouseEvent) {
+            var position = getPosition(mouseEvent, sigCanvas);
+            checkQuadrant(position);
+            console.log (position.X + ' ' + position.Y);
+            //alert(position.X + ' ' + position.Y);
+        });
+	}
+
 	function update() {
+		input();
 		if (state === "playing") {
 			play();
 		} else if (state === "pause") {
