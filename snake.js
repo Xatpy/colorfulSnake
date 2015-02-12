@@ -273,7 +273,6 @@ $(document).on('ready', function() {
             var position = getPosition(mouseEvent, sigCanvas);
             checkQuadrant(position);
             console.log (position.X + ' ' + position.Y);
-            //alert(position.X + ' ' + position.Y);
         });
 	}
 
