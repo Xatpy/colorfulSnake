@@ -1,5 +1,9 @@
 $(document).on('ready', function() {
 	//Vamos a crear un contexto 2d de nuestro canvas.
+
+  	// $('#snake').width(document.body.clientWidth);
+  	// $('#snake').height(document.body.clientHeight);
+
 	var canvas = $("#snake")[0];
 	var context = canvas.getContext("2d");
  
@@ -38,10 +42,12 @@ $(document).on('ready', function() {
 
 	var is_touch_device = null;
 
-	//El juego tiene la dirección "right" por defecto y se ejecuta la función paint
-	//dependiendo el nivel que hayas configurado arriba
+	init();
+
 	function init()
 	{
+		initialSettings();
+
 		initListeners();
 
 		numCellsWidth = width / cellWidth;
@@ -71,7 +77,9 @@ $(document).on('ready', function() {
 		gameLoop = setInterval(update, 1000 / level);
 	}
  
-	init();
+ 	function initialSettings() {
+ 		//alert('width:' + document.body.clientWidth + '   : height:' + document.body.clientHeight);
+ 	}
 
 	function initListeners() {
          is_touch_device = 'ontouchstart' in document.documentElement;
