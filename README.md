@@ -6,3 +6,4 @@ Port game from classic game **Snake** , but introducing a new mechanic: *random 
 
 ## Todo
  - [ ] Generate food only in free spaces.
+ - [ ] Adapt canvas to device
