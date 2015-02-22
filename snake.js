@@ -166,7 +166,7 @@ $(document).on('ready', function() {
 	}
 
 	function checkPosition(posRnd) {
-		var snakeLength;
+		var snakeLength = snake.length;
 		for (var i = 0; i < snakeLength; ++i) {
 			if ( (snake[i].x === posRnd.x) && (snake[i].y === posRnd.y) ) {
 				return true;
