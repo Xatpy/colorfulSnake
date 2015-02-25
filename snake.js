@@ -27,7 +27,7 @@ $(document).on('ready', function() {
 
 
 	var score;
-	var level = 10; //1 El nivel más lento, 10 el nivel más rápido.
+	var level = 5; //1 El nivel más lento, 10 el nivel más rápido.
 	var background = 'white';
 	var border = 'black';
 	var snakeColor = 'black';
@@ -241,37 +241,73 @@ $(document).on('ready', function() {
       }
     
     function checkQuadrant(position) {
-
-    	//tengo que calcular el cuadrante que ha pulsado en función de la posicion en función de la pulsación
-    	//para luego lanzar una pulsación de la de las flechas
-    	//diagonal primera, las coordenadas son iguales. 1,1; 2,2; 3,3; 4,4
-    	//segunda diagonal, las coordenadas son 0,400; 1,399; 2, 398; 3;397
-
-    	var he = canvas.height;
-    	var wi = canvas.width;
-
-    	var p1 = {X: 0,  Y: he },
-    		p2 = {X: wi, Y: 0  };
-
-       	var d1 = p1 - p2;
-
-    	// he
-    	if (position.X < (wi / 2)) {
-    		if (position.Y > (he / 2) ) {
-    			d = "up";
-    		} else {
-    			d = "down"
-    		}
+    	debugger
+    	// el punto de la posición donde se ha pulsado en el canvas
+    	var P = [position.X, position.Y];
+    	//Voy a comprobar en qué cuadrante ha dado y lo guardo en la variable result.
+    	var dir = "";
+    	var centro = [(width / 2), (height / 2)];
+    	//Compruebo el cuadrante de la izquierda ||| (0,0) | (heigh,0) | (width/2,height/2)
+    	var A = [0,0];
+    	var B = [0,height];
+    	var C = centro;
+    	if (pointInTriange(P,A,B,C)) {
+    		dir = "left"; // izquierda
     	} else {
-    		if (position.Y > (he / 2) ) {
-    			d = "right";
+    		//Compruebo en el cuadrante de arriba ||| (0,0) | (centro) | (width, 0)
+    		A = [0,0];
+    		B = [width, 0];
+    		C = centro;
+    		if (pointInTriange(P,A,B,C)) {
+    			dir = "up"; //arriba
     		} else {
-    			d = "left"
+    			//Derecha
+    			A = [width, 0];
+    			B = centro;
+    			C = [width, height];
+    			if (pointInTriange(P,A,B,C)) {
+    				dir = "right";
+    			} else {
+    				//Abajo
+    				A = [width, height];
+    				B = centro;
+    				C = [0, height];
+    				if (pointInTriange(P,A,B,C)) {
+    					dir = "down";
+    				}
+    			}
     		}
     	}
 
+    	return dir;
+    }
 
-    	return;
+    function pointInTriange(P, A, B, C) {
+		// Compute vectors        
+		function vec(from, to) {  
+		return [to[0] - from[0], to[1] - from[1]];  
+		}
+
+		// Compute dot products
+		function dot(u, v) {  
+		return u[0] * v[0] + u[1] * v[1];  
+		}
+
+		var v0 = vec(A, C);
+		var v1 = vec(A, B);
+		var v2 = vec(A, P);
+
+		var dot00 = dot(v0, v0);
+		var dot01 = dot(v0, v1);
+		var dot02 = dot(v0, v2);
+		var dot11 = dot(v1, v1);
+		var dot12 = dot(v1, v2);
+		// Compute barycentric coordinates
+		var invDenom = 1.0 / (dot00 * dot11 - dot01 * dot01);
+		var u = (dot11 * dot02 - dot01 * dot12) * invDenom;
+		var v = (dot00 * dot12 - dot01 * dot02) * invDenom;
+		// Check if point is in triangle
+		return (u >= 0) && (v >= 0) && (u + v < 1);
     }
 
 	function input() {
@@ -279,8 +315,9 @@ $(document).on('ready', function() {
 
 		$("#snake").mousedown(function (mouseEvent) {
             var position = getPosition(mouseEvent, sigCanvas);
-            checkQuadrant(position);
-            console.log (position.X + ' ' + position.Y);
+            d = checkQuadrant(position);
+            //console.log (position.X + ' ' + position.Y);
+            console.log('cuadrante: ' + d);
         });
 	}
 
