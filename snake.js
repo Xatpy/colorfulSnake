@@ -38,6 +38,7 @@ $(document).on('ready', function() {
 	var record = -1;
 
 	var is_touch_device = null;
+	var sigCanvas;
 
 	init();
 
@@ -305,15 +306,15 @@ $(document).on('ready', function() {
     }
 
 	function input() {
-         var sigCanvas = document.getElementById("canvasSignature");
+		sigCanvas = document.getElementById("canvasSignature");
+	}
 
-		$("#snake").mousedown(function (mouseEvent) {
+	$("#snake").mousedown(function (mouseEvent) {
             var position = getPosition(mouseEvent, sigCanvas);
             d = checkQuadrant(position);
             //console.log (position.X + ' ' + position.Y);
             console.log('cuadrante: ' + d);
         });
-	}
 
 	function update() {
 		input();
