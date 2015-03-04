@@ -1,6 +1,4 @@
 $(document).on('ready', function() {
-	//Vamos a crear un contexto 2d de nuestro canvas.
-
   	// $('#snake').width(document.body.clientWidth);
   	// $('#snake').height(document.body.clientHeight);
 
@@ -16,7 +14,7 @@ $(document).on('ready', function() {
 	var state = "playing";
 	var pause = false;
 
-	//Definimos algunas variables para configurar nuestro juego
+	//Global variables
 	var cellWidth = 10;
 	var d; 		//direction
 	var old_direction;
@@ -27,12 +25,11 @@ $(document).on('ready', function() {
 
 
 	var score;
-	var level = 5; //1 El nivel más lento, 10 el nivel más rápido.
+	var level = 5; //Speed level
 	var background = 'white';
 	var border = 'black';
 	var snakeColor = 'black';
 
-	//Creamos nuestra víbora
 	var snake;
 
 	var textGameOver = [];
@@ -121,7 +118,7 @@ $(document).on('ready', function() {
        drawer[event.type](coors);
     }
 
-	//Creamos la víbora
+    //Creating snake
 	function createSnake()
 	{
 		var length = 5;
@@ -138,7 +135,7 @@ $(document).on('ready', function() {
 		return '#'+(0x1000000+(Math.random())*0xffffff).toString(16).substr(1,6);
 	}
 
-	//Creamos la comida de la víbora de manera aleatoria
+	//Creating food RANDOMLY
 	function createFood()
 	{
 		food = {
@@ -153,7 +150,6 @@ $(document).on('ready', function() {
 		var range = 1000000;
 
 		for (var i = 0; i < listFood.length; ++i) {
-			//if (listFood[i].color === color) {
 			var numA = parseInt(listFood[i].color.slice(1,7),16);
 			var numB = parseInt(color.slice(1,7),16);
 			var rest = Math.abs(numA - numB);
@@ -225,23 +221,21 @@ $(document).on('ready', function() {
 		return 0;
 	}
 
-	      // works out the X, Y position of the click inside the canvas from the X, Y position on the page
-      function getPosition(mouseEvent, sigCanvas) {
+      // works out the X, Y position of the click inside the canvas from the X, Y position on the page
+	function getPosition(mouseEvent, sigCanvas) {
+		var x, y;
+		if (mouseEvent.pageX != undefined && mouseEvent.pageY != undefined) {
+			x = mouseEvent.pageX;
+			y = mouseEvent.pageY;
+		} else {
+			x = mouseEvent.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+			y = mouseEvent.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+		}
 
-         var x, y;
-         if (mouseEvent.pageX != undefined && mouseEvent.pageY != undefined) {
-            x = mouseEvent.pageX;
-            y = mouseEvent.pageY;
-         } else {
-            x = mouseEvent.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
-            y = mouseEvent.clientY + document.body.scrollTop + document.documentElement.scrollTop;
-         }
- 
-         return { X: x - canvas.offsetLeft, Y: y - canvas.offsetTop };
-      }
+		return { X: x - canvas.offsetLeft, Y: y - canvas.offsetTop };
+	}
     
     function checkQuadrant(position) {
-    	debugger
     	// el punto de la posición donde se ha pulsado en el canvas
     	var P = [position.X, position.Y];
     	//Voy a comprobar en qué cuadrante ha dado y lo guardo en la variable result.
@@ -356,8 +350,6 @@ $(document).on('ready', function() {
 		var nx = snake[0].x;
 		var ny = snake[0].y;
 
-		//pause = false;
-
 		if (d === "enter") {
 			pause = true;
 		} else {
@@ -379,7 +371,6 @@ $(document).on('ready', function() {
 		}
 
 		if (!pause) {
-
 			if (nx == -1 || nx == numCellsWidth || ny == -1 || ny == numCellsHeight || checkCollision(nx, ny, snake)) {
 				state = "gameOver";
 				checkRecord(score);
