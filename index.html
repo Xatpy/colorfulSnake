@@ -9,8 +9,7 @@
 		background-color: 'black';
 		text-align: center;
 	}
-	.game
-	{
+	.game {
 		margin: 0 auto;
 		/*width: 450px;*/
 	}
@@ -30,7 +29,8 @@
 				return '#'+(0x1000000+(Math.random())*0xffffff).toString(16).substr(1,6);
 			}
 
-			var txt = " <span style='color:"+createRandomColor()+"'>C</span>" +
+			var txt = 
+			 "<span style='color:" + createRandomColor() + "'>C</span>" +
 			 "<span style='color:" + createRandomColor() + "'>o</span>" +
 			 "<span style='color:" + createRandomColor() + "'>l</span>" +
 			 "<span style='color:" + createRandomColor() + "'>o</span>" +
@@ -50,7 +50,7 @@
 		</script>
 		
 		<div class="game">
-			<canvas id="snake" width="400" height="400"></canvas>
+			<canvas id="snake" width="600" height="600"></canvas>
 			<!--<canvas id="snake"></canvas>-->
 		</div>
 

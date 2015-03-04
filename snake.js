@@ -9,6 +9,8 @@ $(document).on('ready', function() {
 	var width = $("#snake").width();
 	var height = $("#snake").height();
 
+	var varScreen = true;
+
 	var numCellsWidth, numCellsHeight;
 
 	var state = "playing";
@@ -22,7 +24,6 @@ $(document).on('ready', function() {
 	var food;
 	var listFood = [];
 	var numFood = 10;
-
 
 	var score;
 	var level = 5; //Speed level
@@ -76,7 +77,15 @@ $(document).on('ready', function() {
 	}
  
  	function initialSettings() {
- 		//alert('width:' + document.body.clientWidth + '   : height:' + document.body.clientHeight);
+ 		if (varScreen) {
+	 		alert('width:' + document.body.clientWidth + '   : height:' + document.body.clientHeight);
+	 		var size = (document.body.clientHeight <= document.body.clientWidth ? document.body.clientHeight : document.body.clientWidth);
+
+			var canvas = document.getElementById('snake');
+			canvas.width = canvas.height = size;
+
+			width = height = size;
+		}
  	}
 
 	function initListeners() {
@@ -312,8 +321,7 @@ $(document).on('ready', function() {
 	$("#snake").mousedown(function (mouseEvent) {
             var position = getPosition(mouseEvent, sigCanvas);
             d = checkQuadrant(position);
-            //console.log (position.X + ' ' + position.Y);
-            console.log('cuadrante: ' + d);
+            //console.log('cuadrante: ' + d);
         });
 
 	function update() {
@@ -426,7 +434,6 @@ $(document).on('ready', function() {
 		var scoreText = "Score: " + score;
 		context.fillText(scoreText, 5, height - 5);
 
-		//paintCell(food.x, food.y, 'red');
 		for (var i = 0; i < numFood; ++i) {
 			paintCell(listFood[i].x, listFood[i].y, listFood[i].color);
 		}
