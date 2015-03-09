@@ -78,7 +78,7 @@ $(document).on('ready', function() {
  
  	function initialSettings() {
  		if (varScreen) {
-	 		alert('width:' + document.body.clientWidth + '   : height:' + document.body.clientHeight);
+	 		//alert('width:' + document.body.clientWidth + '   : height:' + document.body.clientHeight);
 	 		var size = (document.body.clientHeight <= document.body.clientWidth ? document.body.clientHeight : document.body.clientWidth);
 
 			var canvas = document.getElementById('snake');
