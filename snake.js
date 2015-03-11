@@ -48,7 +48,7 @@ $(document).on('ready', function() {
 		initialSettings();
 
 		initListeners();
-debugger
+
 		numCellsWidth = Math.floor(width / cellWidth);
 		numCellsHeight = Math.ceil(height / cellWidth);
 
@@ -443,10 +443,17 @@ debugger
 		}
 	}
 
+	//Label size -> x = 20 ;;; y = 17
 	function generateTextGameOver() {
 
-		var offsetX = 9;
-		var offsetY = 9;
+		//Calculating offset depending on numCellsWidth and numCellsHeight
+		//I check where is the center of what I have
+		var centerX = numCellsWidth / 2;
+		var centerY = numCellsHeight / 2;
+
+		var offsetX = centerX - 10;
+		var offsetY = centerY - 8;
+
 		var clr = 'black';
 
 		// G
