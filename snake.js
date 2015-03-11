@@ -318,11 +318,15 @@ $(document).on('ready', function() {
 		sigCanvas = document.getElementById("canvasSignature");
 	}
 
-	$("#snake").mousedown(function (mouseEvent) {
-            var position = getPosition(mouseEvent, sigCanvas);
-            d = checkQuadrant(position);
-            //console.log('cuadrante: ' + d);
-        });
+	$("#snake").mousedown(function (mouseEvent) {	
+        if (state === "gameOver") {
+        	d = "enter";
+        	return;
+        }
+
+        var position = getPosition(mouseEvent, sigCanvas);
+        d = checkQuadrant(position);
+    });
 
 	function update() {
 		input();
