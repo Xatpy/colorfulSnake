@@ -48,9 +48,9 @@ $(document).on('ready', function() {
 		initialSettings();
 
 		initListeners();
-
-		numCellsWidth = width / cellWidth;
-		numCellsHeight = height / cellWidth;
+debugger
+		numCellsWidth = Math.floor(width / cellWidth);
+		numCellsHeight = Math.ceil(height / cellWidth);
 
 		generateTextGameOver();
 		generateTextPause();
@@ -384,7 +384,7 @@ $(document).on('ready', function() {
 		}
 
 		if (!pause) {
-			if (nx == -1 || nx == numCellsWidth || ny == -1 || ny == numCellsHeight || checkCollision(nx, ny, snake)) {
+			if (nx <= -1 || nx >= numCellsWidth || ny <= -1 || ny >= numCellsHeight || checkCollision(nx, ny, snake)) {
 				state = "gameOver";
 				checkRecord(score);
 				return;
