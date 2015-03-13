@@ -1,6 +1,4 @@
 $(document).on('ready', function() {
-	//Vamos a crear un contexto 2d de nuestro canvas.
-
   	// $('#snake').width(document.body.clientWidth);
   	// $('#snake').height(document.body.clientHeight);
 
@@ -11,12 +9,14 @@ $(document).on('ready', function() {
 	var width = $("#snake").width();
 	var height = $("#snake").height();
 
+	var varScreen = true;
+
 	var numCellsWidth, numCellsHeight;
 
 	var state = "playing";
 	var pause = false;
 
-	//Definimos algunas variables para configurar nuestro juego
+	//Global variables
 	var cellWidth = 10;
 	var d; 		//direction
 	var old_direction;
@@ -25,14 +25,12 @@ $(document).on('ready', function() {
 	var listFood = [];
 	var numFood = 10;
 
-
 	var score;
-	var level = 10; //1 El nivel más lento, 10 el nivel más rápido.
+	var level = 5; //Speed level
 	var background = 'white';
 	var border = 'black';
 	var snakeColor = 'black';
 
-	//Creamos nuestra víbora
 	var snake;
 
 	var textGameOver = [];
@@ -41,6 +39,7 @@ $(document).on('ready', function() {
 	var record = -1;
 
 	var is_touch_device = null;
+	var sigCanvas;
 
 	init();
 
@@ -50,8 +49,8 @@ $(document).on('ready', function() {
 
 		initListeners();
 
-		numCellsWidth = width / cellWidth;
-		numCellsHeight = height / cellWidth;
+		numCellsWidth = Math.floor(width / cellWidth);
+		numCellsHeight = Math.ceil(height / cellWidth);
 
 		generateTextGameOver();
 		generateTextPause();
@@ -78,7 +77,15 @@ $(document).on('ready', function() {
 	}
  
  	function initialSettings() {
- 		//alert('width:' + document.body.clientWidth + '   : height:' + document.body.clientHeight);
+ 		if (varScreen) {
+	 		//alert('width:' + document.body.clientWidth + '   : height:' + document.body.clientHeight);
+	 		var size = (document.body.clientHeight <= document.body.clientWidth ? document.body.clientHeight : document.body.clientWidth);
+
+			var canvas = document.getElementById('snake');
+			canvas.width = canvas.height = size;
+
+			width = height = size;
+		}
  	}
 
 	function initListeners() {
@@ -121,7 +128,7 @@ $(document).on('ready', function() {
        drawer[event.type](coors);
     }
 
-	//Creamos la víbora
+    //Creating snake
 	function createSnake()
 	{
 		var length = 5;
@@ -138,7 +145,7 @@ $(document).on('ready', function() {
 		return '#'+(0x1000000+(Math.random())*0xffffff).toString(16).substr(1,6);
 	}
 
-	//Creamos la comida de la víbora de manera aleatoria
+	//Creating food RANDOMLY
 	function createFood()
 	{
 		food = {
@@ -153,7 +160,6 @@ $(document).on('ready', function() {
 		var range = 1000000;
 
 		for (var i = 0; i < listFood.length; ++i) {
-			//if (listFood[i].color === color) {
 			var numA = parseInt(listFood[i].color.slice(1,7),16);
 			var numB = parseInt(color.slice(1,7),16);
 			var rest = Math.abs(numA - numB);
@@ -225,64 +231,102 @@ $(document).on('ready', function() {
 		return 0;
 	}
 
-	      // works out the X, Y position of the click inside the canvas from the X, Y position on the page
-      function getPosition(mouseEvent, sigCanvas) {
+      // works out the X, Y position of the click inside the canvas from the X, Y position on the page
+	function getPosition(mouseEvent, sigCanvas) {
+		var x, y;
+		if (mouseEvent.pageX != undefined && mouseEvent.pageY != undefined) {
+			x = mouseEvent.pageX;
+			y = mouseEvent.pageY;
+		} else {
+			x = mouseEvent.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+			y = mouseEvent.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+		}
 
-         var x, y;
-         if (mouseEvent.pageX != undefined && mouseEvent.pageY != undefined) {
-            x = mouseEvent.pageX;
-            y = mouseEvent.pageY;
-         } else {
-            x = mouseEvent.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
-            y = mouseEvent.clientY + document.body.scrollTop + document.documentElement.scrollTop;
-         }
- 
-         return { X: x - canvas.offsetLeft, Y: y - canvas.offsetTop };
-      }
+		return { X: x - canvas.offsetLeft, Y: y - canvas.offsetTop };
+	}
     
     function checkQuadrant(position) {
-
-    	//tengo que calcular el cuadrante que ha pulsado en función de la posicion en función de la pulsación
-    	//para luego lanzar una pulsación de la de las flechas
-    	//diagonal primera, las coordenadas son iguales. 1,1; 2,2; 3,3; 4,4
-    	//segunda diagonal, las coordenadas son 0,400; 1,399; 2, 398; 3;397
-
-    	var he = canvas.height;
-    	var wi = canvas.width;
-
-    	var p1 = {X: 0,  Y: he },
-    		p2 = {X: wi, Y: 0  };
-
-       	var d1 = p1 - p2;
-
-    	// he
-    	if (position.X < (wi / 2)) {
-    		if (position.Y > (he / 2) ) {
-    			d = "up";
-    		} else {
-    			d = "down"
-    		}
+    	// el punto de la posición donde se ha pulsado en el canvas
+    	var P = [position.X, position.Y];
+    	//Voy a comprobar en qué cuadrante ha dado y lo guardo en la variable result.
+    	var dir = "";
+    	var centro = [(width / 2), (height / 2)];
+    	//Compruebo el cuadrante de la izquierda ||| (0,0) | (heigh,0) | (width/2,height/2)
+    	var A = [0,0];
+    	var B = [0,height];
+    	var C = centro;
+    	if (pointInTriange(P,A,B,C)) {
+    		dir = "left"; // izquierda
     	} else {
-    		if (position.Y > (he / 2) ) {
-    			d = "right";
+    		//Compruebo en el cuadrante de arriba ||| (0,0) | (centro) | (width, 0)
+    		A = [0,0];
+    		B = [width, 0];
+    		C = centro;
+    		if (pointInTriange(P,A,B,C)) {
+    			dir = "up"; //arriba
     		} else {
-    			d = "left"
+    			//Derecha
+    			A = [width, 0];
+    			B = centro;
+    			C = [width, height];
+    			if (pointInTriange(P,A,B,C)) {
+    				dir = "right";
+    			} else {
+    				//Abajo
+    				A = [width, height];
+    				B = centro;
+    				C = [0, height];
+    				if (pointInTriange(P,A,B,C)) {
+    					dir = "down";
+    				}
+    			}
     		}
     	}
 
+    	return dir;
+    }
 
-    	return;
+    function pointInTriange(P, A, B, C) {
+		// Compute vectors        
+		function vec(from, to) {  
+		return [to[0] - from[0], to[1] - from[1]];  
+		}
+
+		// Compute dot products
+		function dot(u, v) {  
+		return u[0] * v[0] + u[1] * v[1];  
+		}
+
+		var v0 = vec(A, C);
+		var v1 = vec(A, B);
+		var v2 = vec(A, P);
+
+		var dot00 = dot(v0, v0);
+		var dot01 = dot(v0, v1);
+		var dot02 = dot(v0, v2);
+		var dot11 = dot(v1, v1);
+		var dot12 = dot(v1, v2);
+		// Compute barycentric coordinates
+		var invDenom = 1.0 / (dot00 * dot11 - dot01 * dot01);
+		var u = (dot11 * dot02 - dot01 * dot12) * invDenom;
+		var v = (dot00 * dot12 - dot01 * dot02) * invDenom;
+		// Check if point is in triangle
+		return (u >= 0) && (v >= 0) && (u + v < 1);
     }
 
 	function input() {
-         var sigCanvas = document.getElementById("canvasSignature");
-
-		$("#snake").mousedown(function (mouseEvent) {
-            var position = getPosition(mouseEvent, sigCanvas);
-            checkQuadrant(position);
-            console.log (position.X + ' ' + position.Y);
-        });
+		sigCanvas = document.getElementById("canvasSignature");
 	}
+
+	$("#snake").mousedown(function (mouseEvent) {	
+        if (state === "gameOver") {
+        	d = "enter";
+        	return;
+        }
+
+        var position = getPosition(mouseEvent, sigCanvas);
+        d = checkQuadrant(position);
+    });
 
 	function update() {
 		input();
@@ -319,8 +363,6 @@ $(document).on('ready', function() {
 		var nx = snake[0].x;
 		var ny = snake[0].y;
 
-		//pause = false;
-
 		if (d === "enter") {
 			pause = true;
 		} else {
@@ -342,8 +384,7 @@ $(document).on('ready', function() {
 		}
 
 		if (!pause) {
-
-			if (nx == -1 || nx == numCellsWidth || ny == -1 || ny == numCellsHeight || checkCollision(nx, ny, snake)) {
+			if (nx <= -1 || nx >= numCellsWidth || ny <= -1 || ny >= numCellsHeight || checkCollision(nx, ny, snake)) {
 				state = "gameOver";
 				checkRecord(score);
 				return;
@@ -397,16 +438,22 @@ $(document).on('ready', function() {
 		var scoreText = "Score: " + score;
 		context.fillText(scoreText, 5, height - 5);
 
-		//paintCell(food.x, food.y, 'red');
 		for (var i = 0; i < numFood; ++i) {
 			paintCell(listFood[i].x, listFood[i].y, listFood[i].color);
 		}
 	}
 
+	//Label size -> x = 20 ;;; y = 17
 	function generateTextGameOver() {
 
-		var offsetX = 9;
-		var offsetY = 9;
+		//Calculating offset depending on numCellsWidth and numCellsHeight
+		//I check where is the center of what I have
+		var centerX = numCellsWidth / 2;
+		var centerY = numCellsHeight / 2;
+
+		var offsetX = centerX - 10;
+		var offsetY = centerY - 8;
+
 		var clr = 'black';
 
 		// G
