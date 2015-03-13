@@ -78,6 +78,9 @@ $(document).on('ready', function() {
  
  	function initialSettings() {
  		if (varScreen) {
+
+ 			//adaptar el tamaño del cuadrado al movil
+
 	 		//alert('width:' + document.body.clientWidth + '   : height:' + document.body.clientHeight);
 	 		var size = (document.body.clientHeight <= document.body.clientWidth ? document.body.clientHeight : document.body.clientWidth);
 
