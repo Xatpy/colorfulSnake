@@ -17,7 +17,7 @@ $(document).on('ready', function() {
 	var pause = false;
 
 	//Global variables
-	var cellWidth = 10;
+	var cellWidth = 20;
 	var d; 		//direction
 	var old_direction;
 	
