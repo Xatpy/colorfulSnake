@@ -410,6 +410,7 @@ $(document).on('ready', function() {
 				score++;
 				//createFood();
 				createRandomListFood();
+                window.navigator.vibrate(250);
 			} else {
 				var tail = snake.pop();	 
 				tail.x = nx;
