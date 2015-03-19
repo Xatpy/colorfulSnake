@@ -385,6 +385,7 @@ $(document).on('ready', function() {
 
 		if (!pause) {
 			if (nx <= -1 || nx >= numCellsWidth || ny <= -1 || ny >= numCellsHeight || checkCollision(nx, ny, snake)) {
+                window.navigator.vibrate(750);
 				state = "gameOver";
 				checkRecord(score);
 				return;
@@ -410,7 +411,7 @@ $(document).on('ready', function() {
 				score++;
 				//createFood();
 				createRandomListFood();
-                window.navigator.vibrate(250);
+                window.navigator.vibrate(200);
 			} else {
 				var tail = snake.pop();	 
 				tail.x = nx;
