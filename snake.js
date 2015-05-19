@@ -80,11 +80,13 @@ $(document).on('ready', function() {
  
  	function initialSettings() {
  		if (varScreen) {
-
  			//adaptar el tamaño del cuadrado al movil
 
 	 		//alert('width:' + document.body.clientWidth + '   : height:' + document.body.clientHeight);
 	 		var size = (document.body.clientHeight <= document.body.clientWidth ? document.body.clientHeight : document.body.clientWidth);
+
+	 		//size -= 200;
+	 		size -= (size / 10) * 2.8 ;
 
 			var canvas = document.getElementById('snake');
 			canvas.width = canvas.height = size;
@@ -392,6 +394,7 @@ $(document).on('ready', function() {
 			if (nx <= -1 || nx >= numCellsWidth || ny <= -1 || ny >= numCellsHeight || checkCollision(nx, ny, snake)) {
                 window.navigator.vibrate(750);
 				state = "gameOver";
+				level = levelDefault;
 				checkRecord(score);
 				return;
 			}
@@ -406,11 +409,8 @@ $(document).on('ready', function() {
 					return;
 				} else {
 					//correct food
-					//level += 10;
 					level += 1; 
-					console.log('comida ' + level);
 
-					//checking
 					clearInterval(gameLoop);
 					gameLoop = setInterval(update, 1000 / level);
 				}
