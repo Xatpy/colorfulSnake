@@ -26,7 +26,9 @@ $(document).on('ready', function() {
 	var numFood = 10;
 
 	var score;
-	var level = 5; //Speed level
+	//var level = 5; //Speed level
+	var levelDefault = 5;
+	var level = levelDefault;
 	var background = 'white';
 	var border = 'black';
 	var snakeColor = 'black';
@@ -73,7 +75,7 @@ $(document).on('ready', function() {
 		}
 		 
 		//game speed
-		gameLoop = setInterval(update, 1000 / level);
+		gameLoop = setInterval(update, 1000 / levelDefault);
 	}
  
  	function initialSettings() {
@@ -404,7 +406,13 @@ $(document).on('ready', function() {
 					return;
 				} else {
 					//correct food
-					//level += 10; 
+					//level += 10;
+					level += 1; 
+					console.log('comida ' + level);
+
+					//checking
+					clearInterval(gameLoop);
+					gameLoop = setInterval(update, 1000 / level);
 				}
 
 				var tail = {
