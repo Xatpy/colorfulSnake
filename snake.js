@@ -43,6 +43,13 @@ $(document).on('ready', function() {
 	var is_touch_device = null;
 	var sigCanvas;
 
+
+	//Flashing so you're invincible
+	var invincible = true;
+	var foodEatenTimeStamp = 0; //We store  the timestamp when we eat correct food
+	var rangeMSInvincible = 1000; //ms
+	var timeStampInvincible = 0; //Timestamp invincibility
+
 	init();
 
 	function init()
@@ -86,7 +93,7 @@ $(document).on('ready', function() {
 	 		var size = (document.body.clientHeight <= document.body.clientWidth ? document.body.clientHeight : document.body.clientWidth);
 
 	 		//size -= 200;
-	 		size -= (size / 10) * 2.8 ;
+	 		size -= (size / 10) * 4 ;
 
 			var canvas = document.getElementById('snake');
 			canvas.width = canvas.height = size;
@@ -226,12 +233,15 @@ $(document).on('ready', function() {
 	//          1 if it has eaten the correct color
 	//         -1 incorrect color
 	function hasEatenFood(nx, ny) {
-		for (var i = 0; i < numFood; i++) {
-			if ( (nx === listFood[i].x) && (ny === listFood[i].y) ) {
-				if (listFood[i].color === snakeColor) {
-					return 1
-				} else {
-					return -1;
+		//We check te food if we aren't invincible
+		if (!invincible) {
+			for (var i = 0; i < numFood; i++) {
+				if ( (nx === listFood[i].x) && (ny === listFood[i].y) ) {
+					if (listFood[i].color === snakeColor) {
+						return 1
+					} else {
+						return -1;
+					}
 				}
 			}
 		}
@@ -370,6 +380,8 @@ $(document).on('ready', function() {
 		var nx = snake[0].x;
 		var ny = snake[0].y;
 
+		checkInvincibility();
+
 		if (d === "enter") {
 			pause = true;
 		} else {
@@ -406,10 +418,15 @@ $(document).on('ready', function() {
 					//incorrect food
 					state = "gameOver";
 					checkRecord(score);
+					level = levelDefault;
 					return;
 				} else {
-					//correct food
+					//Food eaten!
 					level += 1; 
+
+					//Acttivating flash, so the snake is invincible
+					invincible = true;
+					foodEatenTimeStamp = Date.now();
 
 					clearInterval(gameLoop);
 					gameLoop = setInterval(update, 1000 / level);
@@ -443,16 +460,31 @@ $(document).on('ready', function() {
 			paintGameOver();
 		}
 
+		//Painting the snake
 		for (var i = 0; i < snake.length; i++) {
 			var c = snake[i];
-			paintCell(c.x, c.y, snakeColor);
+			paintCell(c.x, c.y, snakeColor, 10, false);
 		}
 
+		//Painting the food
+		for (var i = 0; i < numFood; ++i) {
+			paintCell(listFood[i].x, listFood[i].y, listFood[i].color, true);
+		}
+
+		//Painting the score
 		var scoreText = "Score: " + score;
 		context.fillText(scoreText, 5, height - 5);
+	}
 
-		for (var i = 0; i < numFood; ++i) {
-			paintCell(listFood[i].x, listFood[i].y, listFood[i].color);
+
+	function checkInvincibility() {
+		if (invincible) {
+			//Cheking time so we can deactivate the flashing
+			var currTS = Date.now(); //currenTimeStamp
+			if (currTS > rangeMSInvincible + foodEatenTimeStamp) {
+				currTS = 0;
+				invincible = false;
+			}
 		}
 	}
 
@@ -615,23 +647,45 @@ $(document).on('ready', function() {
 	}
 
 	function generateTextPause() {
-
 	}
 
 	function paintGameOver() {
 		var lng = textGameOver.length;
 		for (var i = 0; i < lng; ++i) {
-			paintCell(textGameOver[i].x, textGameOver[i].y, textGameOver[i].color);
+			paintCell(textGameOver[i].x, textGameOver[i].y, textGameOver[i].color, false);
 		}
 	}
 
+	var invincible = true;
+
 	//Pintamos la celda
-	function paintCell(x, y, color)
+	var contFlashing = 0;
+	function paintCell(x, y, color, food, lastPieceFood)
 	{
-		context.fillStyle = color;
-		context.fillRect(x * cellWidth, y * cellWidth, cellWidth, cellWidth);
-		context.strokeStyle = background;
-		context.strokeRect(x * cellWidth, y * cellWidth, cellWidth, cellWidth);
+		contFlashing++;
+		
+
+		
+		var doPaint = false;
+		if (invincible && food) {
+			doPaint = (contFlashing % 2 === 0);
+			console.log(doPaint);
+		} else {
+			//We aren't invincible
+			doPaint = true;
+		}
+
+		if (doPaint || !food ) {
+			context.fillStyle = color;
+			context.fillRect(x * cellWidth, y * cellWidth, cellWidth, cellWidth);
+			//If we are flashing, I'm going to paint yellow the food
+			if (food && !doPaint) {
+				context.strokeStyle = 'yellow';
+			} else {
+				context.strokeStyle = background;
+			}
+			context.strokeRect(x * cellWidth, y * cellWidth, cellWidth, cellWidth);
+		}
 	}
 
 	//Verificiamos si hubo alguna colisión (si la hubo el juego se reinicia)
@@ -647,19 +701,28 @@ $(document).on('ready', function() {
 	}
 
 	//Captamos las flechas de nuestro teclado para poder mover a nuestra víbora
+	var lastTimeStamp = 0;
+	var currentTimeStamp = 0;
+	var rangeMS = 100;
 	$(document).on('keydown', function(e) {
-		var key = e.which;
-		if (key == "37" && d != "right") {
-			d = "left";
-		} else if (key == "38" && d != "down") {
-			d = "up";
-		} else if (key == "39" && d != "left") {
-			d = "right";
-		} else if (key == "40" && d != "up") {
-			d = "down";
-		} else if (key == "13" && d != "enter") {
-			old_direction = d;
-			d = "enter";
+		currentTimeStamp = Date.now();
+
+		if (currentTimeStamp > lastTimeStamp + rangeMS) {
+			lastTimeStamp = currentTimeStamp;
+
+			var key = e.which;
+			if (key == "37" && d != "right") {
+				d = "left";
+			} else if (key == "38" && d != "down") {
+				d = "up";
+			} else if (key == "39" && d != "left") {
+				d = "right";
+			} else if (key == "40" && d != "up") {
+				d = "down";
+			} else if (key == "13" && d != "enter") {
+				old_direction = d;
+				d = "enter";
+			}
 		}
 	});
 
