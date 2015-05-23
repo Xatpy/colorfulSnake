@@ -17,7 +17,7 @@ $(document).on('ready', function() {
 	var pause = false;
 
 	//Global variables
-	var cellWidth = 20;
+	var cellWidth = 50;  // it has to be dynamic
 	var d; 		//direction
 	var old_direction;
 	
@@ -89,11 +89,11 @@ $(document).on('ready', function() {
  		if (varScreen) {
  			//adaptar el tamaño del cuadrado al movil
 
-	 		//alert('width:' + document.body.clientWidth + '   : height:' + document.body.clientHeight);
+	 		alert('width:' + document.body.clientWidth + '   : height:' + document.body.clientHeight);
 	 		var size = (document.body.clientHeight <= document.body.clientWidth ? document.body.clientHeight : document.body.clientWidth);
 
 	 		//size -= 200;
-	 		size -= (size / 10) * 4 ;
+	 		//size -= (size / 10) * 4 ;
 
 			var canvas = document.getElementById('snake');
 			canvas.width = canvas.height = size;
