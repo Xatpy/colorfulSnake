@@ -408,6 +408,7 @@ $(document).on('ready', function() {
 				state = "gameOver";
 				level = levelDefault;
 				checkRecord(score);
+				invincible = false;
 				return;
 			}
 
@@ -463,10 +464,11 @@ $(document).on('ready', function() {
 		//Painting the snake
 		for (var i = 0; i < snake.length; i++) {
 			var c = snake[i];
-			paintCell(c.x, c.y, snakeColor, 10, false);
+			paintCell(c.x, c.y, snakeColor, false);
 		}
 
 		//Painting the food
+		contFlashing++;
 		for (var i = 0; i < numFood; ++i) {
 			paintCell(listFood[i].x, listFood[i].y, listFood[i].color, true);
 		}
@@ -660,16 +662,11 @@ $(document).on('ready', function() {
 
 	//Pintamos la celda
 	var contFlashing = 0;
-	function paintCell(x, y, color, food, lastPieceFood)
-	{
-		contFlashing++;
-		
-
-		
+	function paintCell(x, y, color, food)
+	{	
 		var doPaint = false;
 		if (invincible && food) {
 			doPaint = (contFlashing % 2 === 0);
-			console.log(doPaint);
 		} else {
 			//We aren't invincible
 			doPaint = true;
@@ -679,7 +676,7 @@ $(document).on('ready', function() {
 			context.fillStyle = color;
 			context.fillRect(x * cellWidth, y * cellWidth, cellWidth, cellWidth);
 			//If we are flashing, I'm going to paint yellow the food
-			if (food && !doPaint) {
+			if (food && invincible) {
 				context.strokeStyle = 'yellow';
 			} else {
 				context.strokeStyle = background;
