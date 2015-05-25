@@ -17,7 +17,7 @@ $(document).on('ready', function() {
 	var pause = false;
 
 	//Global variables
-	var cellWidth = 50;  // it has to be dynamic
+	var cellWidth = 25;  // it has to be dynamic
 	var d; 		//direction
 	var old_direction;
 	
@@ -117,12 +117,20 @@ $(document).on('ready', function() {
 	}
 
     function draw(event) {
-
+console.log('aqui stoy y la d es: ' + d);
        // get the touch coordinates.  Using the first touch in case of multi-touch
+       if (!event || event.targetTouches > 0 || event.targetTouches[0] === undefined ) {
+       	console.log('fuera');
+       	return;
+       }
+
        var coors = {
           x: event.targetTouches[0].pageX,
           y: event.targetTouches[0].pageY
        };
+
+       /*
+alert('draw ' + coors);
 
        // Now we need to get the offset of the canvas location
        var obj = sigCanvas;
@@ -140,6 +148,14 @@ $(document).on('ready', function() {
 
        // pass the coordinates to the appropriate handler
        drawer[event.type](coors);
+       */
+
+//alert('draw ' + coors);
+		var position = {}
+		position.x = coors.x;
+		position.y = coors.y;
+        d = checkQuadrant(coors);
+        console.log(d);
     }
 
     //Creating snake
@@ -250,21 +266,22 @@ $(document).on('ready', function() {
 
       // works out the X, Y position of the click inside the canvas from the X, Y position on the page
 	function getPosition(mouseEvent, sigCanvas) {
-		var x, y;
+		var x_, y_;
 		if (mouseEvent.pageX != undefined && mouseEvent.pageY != undefined) {
-			x = mouseEvent.pageX;
-			y = mouseEvent.pageY;
+			x_ = mouseEvent.pageX;
+			y_ = mouseEvent.pageY;
 		} else {
-			x = mouseEvent.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
-			y = mouseEvent.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+			x_ = mouseEvent.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+			y_ = mouseEvent.clientY + document.body.scrollTop + document.documentElement.scrollTop;
 		}
 
-		return { X: x - canvas.offsetLeft, Y: y - canvas.offsetTop };
+		return { x: x_ - canvas.offsetLeft, y: y_ - canvas.offsetTop };
 	}
     
     function checkQuadrant(position) {
     	// el punto de la posición donde se ha pulsado en el canvas
-    	var P = [position.X, position.Y];
+    	//var P = [position.X, position.Y];
+    	var P = [position.x, position.y];
     	//Voy a comprobar en qué cuadrante ha dado y lo guardo en la variable result.
     	var dir = "";
     	var centro = [(width / 2), (height / 2)];
