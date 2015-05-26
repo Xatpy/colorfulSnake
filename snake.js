@@ -40,7 +40,7 @@ $(document).on('ready', function() {
 
 	var record = -1;
 
-	var is_touch_device = null;
+	var is_touch_device = false;
 	var sigCanvas;
 
 	var vibration = false;
@@ -90,27 +90,34 @@ $(document).on('ready', function() {
  		if (varScreen) {
  			//adaptar el tamaño del cuadrado al movil
 
-	 		alert('width:' + document.body.clientWidth + '   : height:' + document.body.clientHeight);
+	 		//alert('width:' + document.body.clientWidth + '   : height:' + document.body.clientHeight);
 	 		var size = (document.body.clientHeight <= document.body.clientWidth ? document.body.clientHeight : document.body.clientWidth);
 
 	 		//size -= 200;
 	 		//size -= (size / 10) * 4 ;
 
+	 		var space = 50;
 			var canvas = document.getElementById('snake');
-			canvas.width = canvas.height = size;
+			debugger
+			size -= (space * 2)
+			canvas.width = canvas.height = size;//
 
 			width = height = size;
+
+			// I'm going to calculate the cellWidth depending on width. 
+			// I have to have, at least 25 cells.
+			cellWidth = Math.floor(size / 25);
 		}
  	}
 
 	function initListeners() {
          is_touch_device = 'ontouchstart' in document.documentElement;
-         alert(is_touch_device);
+         //alert('is_touch_device ' + is_touch_device);
 
         // attach the touchstart, touchmove, touchend event listeners.
-        canvas.addEventListener('touchstart', draw, false);
-        canvas.addEventListener('touchmove', draw, false);
-        canvas.addEventListener('touchend', draw, false);
+        canvas.addEventListener('touchstart', touchInput, false);
+        canvas.addEventListener('touchmove', touchInput, false);
+        canvas.addEventListener('touchend', touchInput, false);
 
         // prevent elastic scrolling
         canvas.addEventListener('touchmove', function (event) {
@@ -118,7 +125,7 @@ $(document).on('ready', function() {
         }, false); 
 	}
 
-    function draw(event) {
+    function touchInput(event) {
 		console.log('aqui stoy y la d es: ' + d);
 		if (d === "") {
 			console.log('kepasaaki');
@@ -131,6 +138,7 @@ $(document).on('ready', function() {
 	       // get the touch coordinates.  Using the first touch in case of multi-touch
 	       if (!event || event.targetTouches > 0 || event.targetTouches[0] === undefined ) {
 	       	console.log('fuera');
+	       	//alert('fuera');
 	       	return;
 	       }
 
@@ -144,6 +152,7 @@ $(document).on('ready', function() {
 	          x: event.targetTouches[0].pageX,
 	          y: event.targetTouches[0].pageY
 	       };
+
 
 	       /*
 			alert('draw ' + coors);
@@ -167,10 +176,9 @@ $(document).on('ready', function() {
 			       */
 
 			//alert('draw ' + coors);
-			var position = {}
-			position.x = coors.x;
-			position.y = coors.y;
-	        d = checkQuadrant(coors);
+
+        	var position = getPosition(event.targetTouches[0]);
+	        d = checkQuadrant(position);
 	        console.log(d);
 	    } 
 	    else {console.log('pesao');}
@@ -386,6 +394,7 @@ $(document).on('ready', function() {
 	$("#snake").mousedown(function (mouseEvent) {
 
 		if (!is_touch_device) {
+			debugger
 			if (state === "gameOver") {
         		d = "enter";
         		return;
@@ -554,8 +563,8 @@ $(document).on('ready', function() {
 		var centerX = numCellsWidth / 2;
 		var centerY = numCellsHeight / 2;
 
-		var offsetX = centerX - 10;
-		var offsetY = centerY - 8;
+		var offsetX = centerX - 12;
+		var offsetY = centerY - 10;
 
 		var clr = 'black';
 
