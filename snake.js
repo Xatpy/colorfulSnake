@@ -102,6 +102,13 @@ $(document).on('ready', function() {
 			size -= (space * 2)
 			canvas.width = canvas.height = size;//
 
+			
+			$('#record').css({"height":"10px"})
+			$('#head').css({"margin":"4px"})
+			
+	
+			var hhh = $(document).height();
+
 			width = height = size;
 
 			// I'm going to calculate the cellWidth depending on width. 
