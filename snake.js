@@ -43,6 +43,7 @@ $(document).on('ready', function() {
 	var is_touch_device = null;
 	var sigCanvas;
 
+	var vibration = false;
 
 	//Flashing so you're invincible
 	var invincible = true;
@@ -104,6 +105,7 @@ $(document).on('ready', function() {
 
 	function initListeners() {
          is_touch_device = 'ontouchstart' in document.documentElement;
+         alert(is_touch_device);
 
         // attach the touchstart, touchmove, touchend event listeners.
         canvas.addEventListener('touchstart', draw, false);
@@ -117,45 +119,61 @@ $(document).on('ready', function() {
 	}
 
     function draw(event) {
-console.log('aqui stoy y la d es: ' + d);
-       // get the touch coordinates.  Using the first touch in case of multi-touch
-       if (!event || event.targetTouches > 0 || event.targetTouches[0] === undefined ) {
-       	console.log('fuera');
-       	return;
-       }
+		console.log('aqui stoy y la d es: ' + d);
+		if (d === "") {
+			console.log('kepasaaki');
+			d = 'down';
+		}
+		currentTimeStamp = Date.now();
+		if (currentTimeStamp > lastTimeStamp + rangeMS) {
+			lastTimeStamp = currentTimeStamp;
 
-       var coors = {
-          x: event.targetTouches[0].pageX,
-          y: event.targetTouches[0].pageY
-       };
+	       // get the touch coordinates.  Using the first touch in case of multi-touch
+	       if (!event || event.targetTouches > 0 || event.targetTouches[0] === undefined ) {
+	       	console.log('fuera');
+	       	return;
+	       }
 
-       /*
-alert('draw ' + coors);
 
-       // Now we need to get the offset of the canvas location
-       var obj = sigCanvas;
+	       if (state === "gameOver") {
+        		d = "enter";
+        		return;
+        	}
 
-       if (obj.offsetParent) {
-          // Every time we find a new object, we add its offsetLeft and offsetTop to curleft and curtop.
-          do {
-             coors.x -= obj.offsetLeft;
-             coors.y -= obj.offsetTop;
-          }
-		  // The while loop can be "while (obj = obj.offsetParent)" only, which does return null
-		  // when null is passed back, but that creates a warning in some editors (i.e. VS2010).
-          while ((obj = obj.offsetParent) != null);
-       }
+	       var coors = {
+	          x: event.targetTouches[0].pageX,
+	          y: event.targetTouches[0].pageY
+	       };
 
-       // pass the coordinates to the appropriate handler
-       drawer[event.type](coors);
-       */
+	       /*
+			alert('draw ' + coors);
 
-//alert('draw ' + coors);
-		var position = {}
-		position.x = coors.x;
-		position.y = coors.y;
-        d = checkQuadrant(coors);
-        console.log(d);
+			       // Now we need to get the offset of the canvas location
+			       var obj = sigCanvas;
+
+			       if (obj.offsetParent) {
+			          // Every time we find a new object, we add its offsetLeft and offsetTop to curleft and curtop.
+			          do {
+			             coors.x -= obj.offsetLeft;
+			             coors.y -= obj.offsetTop;
+			          }
+					  // The while loop can be "while (obj = obj.offsetParent)" only, which does return null
+					  // when null is passed back, but that creates a warning in some editors (i.e. VS2010).
+			          while ((obj = obj.offsetParent) != null);
+			       }
+
+			       // pass the coordinates to the appropriate handler
+			       drawer[event.type](coors);
+			       */
+
+			//alert('draw ' + coors);
+			var position = {}
+			position.x = coors.x;
+			position.y = coors.y;
+	        d = checkQuadrant(coors);
+	        console.log(d);
+	    } 
+	    else {console.log('pesao');}
     }
 
     //Creating snake
@@ -289,29 +307,42 @@ alert('draw ' + coors);
     	var A = [0,0];
     	var B = [0,height];
     	var C = centro;
+    	//Also, we check that we aren't going to the opposite direction (logic problem)
     	if (pointInTriange(P,A,B,C)) {
-    		dir = "left"; // izquierda
+    		if (d !== "right")
+    			dir = "left"; 
+    		else
+    			dir = "right";
     	} else {
     		//Compruebo en el cuadrante de arriba ||| (0,0) | (centro) | (width, 0)
     		A = [0,0];
     		B = [width, 0];
     		C = centro;
-    		if (pointInTriange(P,A,B,C)) {
-    			dir = "up"; //arriba
+    		if (pointInTriange(P,A,B,C) ) {
+    			if (d !== "down") 
+    				dir = "up"; 
+    			else
+    				dir = "down";
     		} else {
     			//Derecha
     			A = [width, 0];
     			B = centro;
     			C = [width, height];
     			if (pointInTriange(P,A,B,C)) {
-    				dir = "right";
+    				if (d !== "left")
+    					dir = "right";
+    				else
+    					dir = "left";
     			} else {
     				//Abajo
     				A = [width, height];
     				B = centro;
     				C = [0, height];
     				if (pointInTriange(P,A,B,C)) {
-    					dir = "down";
+    					if (d !== "up")
+    						dir = "down";
+    					else
+    						dir = "up";
     				}
     			}
     		}
@@ -352,14 +383,18 @@ alert('draw ' + coors);
 		sigCanvas = document.getElementById("canvasSignature");
 	}
 
-	$("#snake").mousedown(function (mouseEvent) {	
-        if (state === "gameOver") {
-        	d = "enter";
-        	return;
-        }
+	$("#snake").mousedown(function (mouseEvent) {
 
-        var position = getPosition(mouseEvent, sigCanvas);
-        d = checkQuadrant(position);
+		if (!is_touch_device) {
+			if (state === "gameOver") {
+        		d = "enter";
+        		return;
+        	}
+			console.log('clickkkkkkkkk');
+        	var position = getPosition(mouseEvent, sigCanvas);
+        	d = checkQuadrant(position);
+		}
+        
     });
 
 	function update() {
@@ -421,7 +456,9 @@ alert('draw ' + coors);
 
 		if (!pause) {
 			if (nx <= -1 || nx >= numCellsWidth || ny <= -1 || ny >= numCellsHeight || checkCollision(nx, ny, snake)) {
-                window.navigator.vibrate(750);
+				if (vibration) {
+                	window.navigator.vibrate(500);
+            	}
 				state = "gameOver";
 				level = levelDefault;
 				checkRecord(score);
@@ -457,7 +494,9 @@ alert('draw ' + coors);
 				score++;
 				//createFood();
 				createRandomListFood();
-                window.navigator.vibrate(200);
+				if (vibration) {
+                	window.navigator.vibrate(100);
+            	}
 			} else {
 				var tail = snake.pop();	 
 				tail.x = nx;
@@ -719,8 +758,8 @@ alert('draw ' + coors);
 	var currentTimeStamp = 0;
 	var rangeMS = 100;
 	$(document).on('keydown', function(e) {
-		currentTimeStamp = Date.now();
 
+		currentTimeStamp = Date.now();
 		if (currentTimeStamp > lastTimeStamp + rangeMS) {
 			lastTimeStamp = currentTimeStamp;
 
