@@ -554,12 +554,83 @@ debugger
 		context.fillText(scoreText, 5, height - 5);
 
 		//Paint learning
+		paintIntro()
+		
+
+	}
+
+	function paintIntro(){
 		if (intro) {
 			for (var i = 0; i <= numCellsHeight; ++i) {
 				paintCell(i,i,'black',true);
 				var secondDiagonal = numCellsHeight - i;
 				paintCell(secondDiagonal, i, 'black', true);
 			}
+
+			//Arrows
+			var centerX = Math.floor(numCellsWidth / 2);
+			var centerY = Math.floor(numCellsHeight / 2);
+
+			//Arrow left
+			for (var i = 3; i <= 9; ++i) {
+				paintCell(centerX - i, centerY, 'black', true);
+				if (i === 7) {
+					paintCell(centerX - i, centerY - 1, 'black', true);
+					paintCell(centerX - i, centerY - 2, 'black', true);
+					paintCell(centerX - i, centerY + 2, 'black', true);
+					paintCell(centerX - i, centerY + 1, 'black', true);
+				}
+				if (i === 8) {
+					paintCell(centerX - i, centerY - 1, 'black', true);
+					paintCell(centerX - i, centerY + 1, 'black', true);
+				}
+			}
+
+			//Arrow right
+			for (var i = 3; i <= 9; ++i) {
+				paintCell(centerX + i, centerY, 'black', true);
+				if (i === 7) {
+					paintCell(centerX + i, centerY - 1, 'black', true);
+					paintCell(centerX + i, centerY - 2, 'black', true);
+					paintCell(centerX + i, centerY + 2, 'black', true);
+					paintCell(centerX + i, centerY + 1, 'black', true);
+				}
+				if (i === 8) {
+					paintCell(centerX + i, centerY - 1, 'black', true);
+					paintCell(centerX + i, centerY + 1, 'black', true);
+				}
+			}
+
+			//Arrow up
+			for (var i = 3; i <= 9; ++i) {
+				paintCell(centerX, centerY - i, 'black', true);
+				if (i === 7) {
+					paintCell(centerX - 1, centerY - i, 'black', true);
+					paintCell(centerX - 2, centerY - i, 'black', true);
+					paintCell(centerX + 2, centerY - i, 'black', true);
+					paintCell(centerX + 1, centerY - i, 'black', true);
+				}
+				if (i === 8) {
+					paintCell(centerX - 1, centerY - i, 'black', true);
+					paintCell(centerX + 1, centerY - i, 'black', true);
+				}
+			}
+
+			//Arrow down
+			for (var i = 3; i <= 9; ++i) {
+				paintCell(centerX, centerY + i, 'black', true);
+				if (i === 7) {
+					paintCell(centerX - 1, centerY + i, 'black', true);
+					paintCell(centerX - 2, centerY + i, 'black', true);
+					paintCell(centerX + 2, centerY + i, 'black', true);
+					paintCell(centerX + 1, centerY + i, 'black', true);
+				}
+				if (i === 8) {
+					paintCell(centerX - 1, centerY + i, 'black', true);
+					paintCell(centerX + 1, centerY + i, 'black', true);
+				}
+			}
+
 		}
 
 	}
@@ -598,8 +669,8 @@ debugger
 		var centerX = numCellsWidth / 2;
 		var centerY = numCellsHeight / 2;
 
-		var offsetX = centerX - 12;
-		var offsetY = centerY - 10;
+		var offsetX = centerX - 9;
+		var offsetY = centerY - 8;
 
 		var clr = 'black';
 
