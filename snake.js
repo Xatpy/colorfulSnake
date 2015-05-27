@@ -51,6 +51,11 @@ $(document).on('ready', function() {
 	var rangeMSInvincible = 1000; //ms
 	var timeStampInvincible = 0; //Timestamp invincibility
 
+	//Intro flashing explanation
+	var rangeIntro = 3000; //3 seconds to learn
+	var timeStampIntro = 0;
+	var intro = true;
+
 	init();
 
 	function init()
@@ -66,8 +71,10 @@ $(document).on('ready', function() {
 		generateTextPause();
 
 		resetGame();
+		timeStampIntro = Date.now();//It isn't inside resetGame because it's only shown the firtst time
 
 		checkRecord(0);
+
 	}
 
 	function resetGame() {
@@ -91,29 +98,34 @@ $(document).on('ready', function() {
  			//adaptar el tamaño del cuadrado al movil
 
 	 		//alert('width:' + document.body.clientWidth + '   : height:' + document.body.clientHeight);
-	 		var size = (document.body.clientHeight <= document.body.clientWidth ? document.body.clientHeight : document.body.clientWidth);
+	 		var sizeCanvas = (document.body.clientHeight <= document.body.clientWidth ? document.body.clientHeight : document.body.clientWidth);
 
 	 		//size -= 200;
 	 		//size -= (size / 10) * 4 ;
 
-	 		var space = 50;
+	 		var space = 40;
 			var canvas = document.getElementById('snake');
 			debugger
-			size -= (space * 2)
-			canvas.width = canvas.height = size;//
-
+			sizeCanvas -= (space * 2)
+			canvas.width = canvas.height = sizeCanvas;//
 			
-			$('#record').css({"height":"10px"})
-			$('#head').css({"margin":"4px"})
-			
-	
-			var hhh = $(document).height();
-
-			width = height = size;
+			//Global variables about width and height, used before
+			width = height = sizeCanvas;
 
 			// I'm going to calculate the cellWidth depending on width. 
 			// I have to have, at least 25 cells.
-			cellWidth = Math.floor(size / 25);
+			cellWidth = Math.floor(sizeCanvas / 25);
+
+			//Then, I'm going to calculate the dimensions of header and record
+			var sizeWindow = $(document).height();
+			var dif = sizeWindow - sizeCanvas;
+
+			//I have dif to share between record and head
+			var margin = dif / 8;
+			$('#head').css({"margin": margin + "px"});
+			$('#record').css({"height":"12px", "margin-top": margin + "px",
+							  "margin-bottom":"1px"});
+
 		}
  	}
 
@@ -160,30 +172,6 @@ $(document).on('ready', function() {
 	          y: event.targetTouches[0].pageY
 	       };
 
-
-	       /*
-			alert('draw ' + coors);
-
-			       // Now we need to get the offset of the canvas location
-			       var obj = sigCanvas;
-
-			       if (obj.offsetParent) {
-			          // Every time we find a new object, we add its offsetLeft and offsetTop to curleft and curtop.
-			          do {
-			             coors.x -= obj.offsetLeft;
-			             coors.y -= obj.offsetTop;
-			          }
-					  // The while loop can be "while (obj = obj.offsetParent)" only, which does return null
-					  // when null is passed back, but that creates a warning in some editors (i.e. VS2010).
-			          while ((obj = obj.offsetParent) != null);
-			       }
-
-			       // pass the coordinates to the appropriate handler
-			       drawer[event.type](coors);
-			       */
-
-			//alert('draw ' + coors);
-
         	var position = getPosition(event.targetTouches[0]);
 	        d = checkQuadrant(position);
 	        console.log(d);
@@ -197,9 +185,21 @@ $(document).on('ready', function() {
 		var length = 5;
 		snake = [];
  
+ 		/*
 		for(var i = length - 1; i >= 0; i--)
 		{
 			snake.push({ x: i, y: 0 });
+		}
+		*/
+
+
+		//Random position in hte first half, because the snake always goes to the right
+		var randomPositionX = Math.floor((Math.random() *  (numCellsWidth / 2) ));
+		var randomPositionY = Math.floor((Math.random() * 10) );
+ 
+		for(var i = (length + randomPositionX) - 1; i >= randomPositionX; i--)
+		{
+			snake.push({ x: i, y: randomPositionY });
 		}
 	}
 
@@ -449,6 +449,7 @@ $(document).on('ready', function() {
 		var ny = snake[0].y;
 
 		checkInvincibility();
+		checkIntro();
 
 		if (d === "enter") {
 			pause = true;
@@ -470,7 +471,7 @@ $(document).on('ready', function() {
 			} 
 		}
 
-		if (!pause) {
+		if (!pause && !intro) {
 			if (nx <= -1 || nx >= numCellsWidth || ny <= -1 || ny >= numCellsHeight || checkCollision(nx, ny, snake)) {
 				if (vibration) {
                 	window.navigator.vibrate(500);
@@ -548,16 +549,40 @@ $(document).on('ready', function() {
 		//Painting the score
 		var scoreText = "Score: " + score;
 		context.fillText(scoreText, 5, height - 5);
+
+		//Paint learning
+		if (intro) {
+			for (var i = 0; i < numCellsHeight; ++i) {
+				paintCell(i,i,'black',true);
+				var secondDiagonal = numCellsHeight - i;
+				paintCell(secondDiagonal, i, 'black', true);
+			}
+		}
+
 	}
 
 
 	function checkInvincibility() {
+		if (intro) {
+			invincible = true;
+			return;
+		}
+
 		if (invincible) {
 			//Cheking time so we can deactivate the flashing
 			var currTS = Date.now(); //currenTimeStamp
 			if (currTS > rangeMSInvincible + foodEatenTimeStamp) {
 				currTS = 0;
 				invincible = false;
+			}
+		}
+	}
+
+	function checkIntro() {
+		if (intro) {
+			var currTSIntro = Date.now();
+			if (currTSIntro > rangeIntro + timeStampIntro) {
+				intro = false;
 			}
 		}
 	}
