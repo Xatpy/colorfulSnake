@@ -65,7 +65,10 @@ $(document).on('ready', function() {
 		initListeners();
 
 		numCellsWidth = Math.floor(width / cellWidth);
-		numCellsHeight = Math.ceil(height / cellWidth);
+		numCellsHeight = Math.floor(height / cellWidth);
+debugger
+		numCellsHeight--;
+		numCellsWidth--;
 
 		generateTextGameOver();
 		generateTextPause();
@@ -472,7 +475,7 @@ $(document).on('ready', function() {
 		}
 
 		if (!pause && !intro) {
-			if (nx <= -1 || nx >= numCellsWidth || ny <= -1 || ny >= numCellsHeight || checkCollision(nx, ny, snake)) {
+			if (nx <= -1 || nx > numCellsWidth || ny <= -1 || ny > numCellsHeight || checkCollision(nx, ny, snake)) {
 				if (vibration) {
                 	window.navigator.vibrate(500);
             	}
@@ -552,7 +555,7 @@ $(document).on('ready', function() {
 
 		//Paint learning
 		if (intro) {
-			for (var i = 0; i < numCellsHeight; ++i) {
+			for (var i = 0; i <= numCellsHeight; ++i) {
 				paintCell(i,i,'black',true);
 				var secondDiagonal = numCellsHeight - i;
 				paintCell(secondDiagonal, i, 'black', true);
