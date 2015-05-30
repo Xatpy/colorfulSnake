@@ -20,14 +20,14 @@
         
         function initAdMob(){
             if ( window.plugins && window.plugins.AdMob ) {
-                var admob_key_banner = "your_key";
-                var admob_key_interstitial = "your_key";
+                var admob_key_banner = "yourKey";
+                //var admob_key_interstitial = "interstitialKey";
                 window.plugins.AdMob.setOptions( {
                     publisherId: admob_key_banner,
                     bannerAtTop: false, // set to true, to put banner at top
                     overlap: false, // set to true, to allow banner overlap webview
                     offsetTopBar: true, // set to true to avoid ios7 status bar overlap                    
-                    interstitialAdId: admob_key_interstitial,
+                    //interstitialAdId: admob_key_interstitial,
                     autoShow: true, // autoshow intertitial Ad
                     isTesting: false // receiving test ad
                 });
@@ -56,6 +56,7 @@
 	body {
 		background-color: 'black';
 		text-align: center;
+		font-family: customfont;
 	}
 	.game {
 		margin: 0 auto;
@@ -66,7 +67,13 @@
 		text-align: center;
 	}
 
+	@font-face {
+	    font-family: customfont;
+	    src: url(./fonts/PixelSplitter-Bold.ttf);
+	}
+
 	</style>
+
 	</head>
  
 	<body bgcolor="#666666">
