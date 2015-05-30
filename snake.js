@@ -43,7 +43,7 @@ $(document).on('ready', function() {
 	var is_touch_device = false;
 	var sigCanvas;
 
-	var vibration = false;
+	var vibration = true;
 
 	//Flashing so you're invincible
 	var invincible = true;
@@ -106,7 +106,7 @@ debugger
 	 		//size -= 200;
 	 		//size -= (size / 10) * 4 ;
 
-	 		var space = 40;
+	 		var space = 30;
 			var canvas = document.getElementById('snake');
 			debugger
 			sizeCanvas -= (space * 2)
