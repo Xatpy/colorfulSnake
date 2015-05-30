@@ -126,9 +126,11 @@ debugger
 			//I have dif to share between record and head
 			var margin = dif / 8;
 			$('#head').css({"margin": margin + "px"});
-			$('#record').css({"height":"12px", "margin-top": margin + "px",
+			$('#record').css({"height":"12px", "margin-top": (margin - 10) + "px",
 							  "margin-bottom":"1px"});
 
+			//Setting the font
+			context.font="10px customfont";
 		}
  	}
 
