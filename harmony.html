@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0" />
+	<title>Harmony</title>
+
+	<style>
+		.child{
+		    display:inline-block;
+		    margin-right:10px;
+background: red;
+		    min-width:200px;
+		    min-height:50px;
+
+			vertical-align: top;
+
+		}
+		.parent{
+		    white-space:nowrap;
+		}
+
+		* { margin:0; padding:0; }
+	</style>
+
+	<script src="http://code.jquery.com/jquery-1.10.1.min.js" type="text/javascript"></script>
+</head>
+
+	<script>
+
+	var numColors = 100;
+
+	var width = $(window).width();
+	var alt = $(window).height();
+
+	//Hexadecimal to decimal
+	function hex2dec(hex) {
+		return parseInt(hex,16);
+	}
+
+	function dec2hex(dec) {
+		return dec.toString(16);
+	}
+
+	function createRandomColor() {
+		return '#'+(0x1000000+(Math.random())*0xffffff).toString(16).substr(1,6);
+	}
+
+	function generate() {
+		var code = "";
+
+		var sz = (width / numColors);
+		var percentage = (sz * 100) / width;
+		var inc = (hex2dec(0xFFFFFF) / numColors);
+		for (var i = 0; i < numColors; ++i) {
+			var color = Math.floor(i * inc);
+			color = dec2hex(color);
+			code += '<div style="width:'+ percentage + '%; display:inline-block;height:' + alt + 'px;background:' +  createRandomColor() + ';">&nbsp</div>';
+		}
+		$(".harmony" ).append(code);
+	}
+
+	</script>
+
+<body>
+
+<div class="harmony">
+</div>
+
+
+
+<input id="numColors"></input>
+<button onclick="generate()">Click</button>
+<script>
+	$( document ).ready(function() {
+		generate();
+	});
+</script>
+</body>
+<html>
