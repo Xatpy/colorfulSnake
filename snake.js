@@ -1,11 +1,9 @@
 $(document).on('ready', function() {
-  	// $('#snake').width(document.body.clientWidth);
-  	// $('#snake').height(document.body.clientHeight);
 
 	var canvas = $("#snake")[0];
 	var context = canvas.getContext("2d");
  
-	//Obtenemos el ancho y alto de nuestro canvas.
+	//we gt canvas size.
 	var width = $("#snake").width();
 	var height = $("#snake").height();
 
@@ -47,12 +45,12 @@ $(document).on('ready', function() {
 
 	//Flashing so you're invincible
 	var invincible = true;
-	var foodEatenTimeStamp = 0; //We store  the timestamp when we eat correct food
-	var rangeMSInvincible = 1000; //ms
-	var timeStampInvincible = 0; //Timestamp invincibility
+	var foodEatenTimeStamp = 0; 	//We store  the timestamp when we eat correct food
+	var rangeMSInvincible = 1000; 	//ms
+	var timeStampInvincible = 0; 	//Timestamp invincibility
 
 	//Intro flashing explanation
-	var rangeIntro = 3000; //3 seconds to learn
+	var rangeIntro = 3000; 			//3 seconds to learn
 	var timeStampIntro = 0;
 	var intro = true;
 
@@ -66,7 +64,7 @@ $(document).on('ready', function() {
 
 		numCellsWidth = Math.floor(width / cellWidth);
 		numCellsHeight = Math.floor(height / cellWidth);
-debugger
+
 		numCellsHeight--;
 		numCellsWidth--;
 
@@ -98,9 +96,6 @@ debugger
  
  	function initialSettings() {
  		if (varScreen) {
- 			//adaptar el tamaño del cuadrado al movil
-
-	 		//alert('width:' + document.body.clientWidth + '   : height:' + document.body.clientHeight);
 	 		var sizeCanvas = (document.body.clientHeight <= document.body.clientWidth ? document.body.clientHeight : document.body.clientWidth);
 
 	 		//size -= 200;
@@ -124,7 +119,7 @@ debugger
 			var dif = sizeWindow - sizeCanvas;
 
 			//I have dif to share between record and head
-			var margin = dif / 8;
+			var margin = dif / 10;
 			$('#head').css({"margin": margin + "px"});
 			$('#record').css({"height":"12px", "margin-top": (margin - 10) + "px",
 							  "margin-bottom":"1px"});
@@ -223,7 +218,6 @@ debugger
 		snakeColor = createRandomColor();
 	}
 
-
 	function existColor(color) {
 		var range = 1000000;
 
@@ -239,10 +233,23 @@ debugger
 		return false;
 	}
 
+	//Check if it's a posible position.
+	//It returns true if the position is filled, so you can't put anything there.
+	//It return false if everything is OK.
 	function checkPosition(posRnd) {
+		//Checking snake
 		var snakeLength = snake.length;
 		for (var i = 0; i < snakeLength; ++i) {
 			if ( (snake[i].x === posRnd.x) && (snake[i].y === posRnd.y) ) {
+				return true;
+			}
+		}
+
+		//Checking food
+		debugger
+		var numFood = listFood.length;
+		for (var i = 0; i < numFood; ++i) {
+			if ( (posRnd.x === listFood[i].x) && (posRnd.y === listFood[i].y) ) {
 				return true;
 			}
 		}
@@ -671,8 +678,8 @@ debugger
 		var centerX = numCellsWidth / 2;
 		var centerY = numCellsHeight / 2;
 
-		var offsetX = centerX - 9;
-		var offsetY = centerY - 8;
+		var offsetX = centerX - 11;
+		var offsetY = centerY - 9;
 
 		var clr = 'black';
 

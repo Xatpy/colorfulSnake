@@ -6,20 +6,6 @@
 	<title>Harmony</title>
 
 	<style>
-		.child{
-		    display:inline-block;
-		    margin-right:10px;
-background: red;
-		    min-width:200px;
-		    min-height:50px;
-
-			vertical-align: top;
-
-		}
-		.parent{
-		    white-space:nowrap;
-		}
-
 		* { margin:0; padding:0; }
 	</style>
 
@@ -51,13 +37,26 @@ background: red;
 
 		var sz = (width / numColors);
 		var percentage = (sz * 100) / width;
-		var inc = (hex2dec(0xFFFFFF) / numColors);
+		var inc = hex2dec(0xffffff);
+		inc = Math.floor(inc / numColors);
 		for (var i = 0; i < numColors; ++i) {
 			var color = Math.floor(i * inc);
 			color = dec2hex(color);
 			code += '<div style="width:'+ percentage + '%; display:inline-block;height:' + alt + 'px;background:' +  createRandomColor() + ';">&nbsp</div>';
+
 		}
-		$(".harmony" ).append(code);
+		$(".harmony").empty();
+		$(".harmony").append(code);
+	}
+
+
+	var miliseconds = 1000;
+
+	timer = setTimeout("time()", miliseconds);
+
+	function time() {
+		timer = setTimeout("time()", miliseconds);
+		generate();
 	}
 
 	</script>
@@ -67,10 +66,9 @@ background: red;
 <div class="harmony">
 </div>
 
+<!--<input id="numColors"></input>
+<button onclick="generate()">Click</button>-->
 
-
-<input id="numColors"></input>
-<button onclick="generate()">Click</button>
 <script>
 	$( document ).ready(function() {
 		generate();
