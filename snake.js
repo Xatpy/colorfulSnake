@@ -71,6 +71,8 @@ $(document).on('ready', function() {
 		generateTextGameOver();
 		generateTextPause();
 
+		initLocalStorage();
+
 		resetGame();
 		timeStampIntro = Date.now();//It isn't inside resetGame because it's only shown the firtst time
 
@@ -177,6 +179,32 @@ $(document).on('ready', function() {
 	        console.log(d);
 	    } 
 	    else {console.log('pesao');}
+    }
+
+    var db;
+    function initLocalStorage() {
+    	db = getLocalStorage();
+
+		function getLocalStorage() {
+		    try {
+		        if(window.localStorage ) {
+		        	alert('si');
+		        	return window.localStorage;            
+		        }
+		    }
+		    catch (e)
+		    {
+		    	alert('no!!!!');
+		        return undefined;
+		    }
+
+		    db
+		}
+
+	    getLocalStorage();
+	    debugger
+	    db.setItem('a', 'hola');
+
     }
 
     //Creating snake
