@@ -24,7 +24,7 @@ $(document).on('ready', function() {
 	var numFood = 10;
 
 	var score;
-	//var level = 5; //Speed level
+
 	var levelDefault = 5;
 	var level = levelDefault;
 	var background = 'white';
@@ -73,13 +73,11 @@ $(document).on('ready', function() {
 		generateTextGameOver();
 		generateTextPause();
 
-
 		resetGame();
 		timeStampIntro = Date.now();//It isn't inside resetGame because it's only shown the firtst time
 
 		checkInitialRecord();
 	}
-
 
 
 	function resetGame() {
@@ -102,10 +100,7 @@ $(document).on('ready', function() {
  		if (varScreen) {
 	 		var sizeCanvas = (document.body.clientHeight <= document.body.clientWidth ? document.body.clientHeight : document.body.clientWidth);
 
-	 		//size -= 200;
-	 		//size -= (size / 10) * 4 ;
-
-	 		var space = 30;
+	 		var space = 30; //space to the canvas margin
 			var canvas = document.getElementById('snake');
 
 			sizeCanvas -= (space * 2)
@@ -130,9 +125,6 @@ $(document).on('ready', function() {
 
 			//Setting the font
 			context.font="10px customfont";
-
-   			//LocalStorage for records
-   			//db = getLocalStorage();
 		}
  	}
 
@@ -163,11 +155,8 @@ $(document).on('ready', function() {
 
 	       // get the touch coordinates.  Using the first touch in case of multi-touch
 	       if (!event || event.targetTouches > 0 || event.targetTouches[0] === undefined ) {
-	       	console.log('fuera');
-	       	//alert('fuera');
 	       	return;
 	       }
-
 
 	       if (state === "gameOver") {
         		d = "enter";
@@ -198,7 +187,6 @@ $(document).on('ready', function() {
 			snake.push({ x: i, y: 0 });
 		}
 		*/
-
 
 		//Random position in hte first half, because the snake always goes to the right
 		var randomPositionX = Math.floor((Math.random() *  (numCellsWidth / 2) ));
@@ -644,8 +632,7 @@ $(document).on('ready', function() {
 				}
 			}
 
-		}
-
+		}//if (intro)
 	}
 
 
