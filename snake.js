@@ -54,6 +54,8 @@ $(document).on('ready', function() {
 	var timeStampIntro = 0;
 	var intro = true;
 
+	var db;
+
 	init();
 
 	function init()
@@ -71,14 +73,14 @@ $(document).on('ready', function() {
 		generateTextGameOver();
 		generateTextPause();
 
-		initLocalStorage();
 
 		resetGame();
 		timeStampIntro = Date.now();//It isn't inside resetGame because it's only shown the firtst time
 
-		checkRecord(0);
-
+		checkInitialRecord();
 	}
+
+
 
 	function resetGame() {
 		d = "right";
@@ -105,7 +107,7 @@ $(document).on('ready', function() {
 
 	 		var space = 30;
 			var canvas = document.getElementById('snake');
-			debugger
+
 			sizeCanvas -= (space * 2)
 			canvas.width = canvas.height = sizeCanvas;//
 			
@@ -128,6 +130,9 @@ $(document).on('ready', function() {
 
 			//Setting the font
 			context.font="10px customfont";
+
+   			//LocalStorage for records
+   			//db = getLocalStorage();
 		}
  	}
 
@@ -179,32 +184,6 @@ $(document).on('ready', function() {
 	        console.log(d);
 	    } 
 	    else {console.log('pesao');}
-    }
-
-    var db;
-    function initLocalStorage() {
-    	db = getLocalStorage();
-
-		function getLocalStorage() {
-		    try {
-		        if(window.localStorage ) {
-		        	alert('si');
-		        	return window.localStorage;            
-		        }
-		    }
-		    catch (e)
-		    {
-		    	alert('no!!!!');
-		        return undefined;
-		    }
-
-		    db
-		}
-
-	    getLocalStorage();
-	    debugger
-	    db.setItem('a', 'hola');
-
     }
 
     //Creating snake
@@ -274,7 +253,6 @@ $(document).on('ready', function() {
 		}
 
 		//Checking food
-		debugger
 		var numFood = listFood.length;
 		for (var i = 0; i < numFood; ++i) {
 			if ( (posRnd.x === listFood[i].x) && (posRnd.y === listFood[i].y) ) {
@@ -441,12 +419,10 @@ $(document).on('ready', function() {
 	$("#snake").mousedown(function (mouseEvent) {
 
 		if (!is_touch_device) {
-			debugger
 			if (state === "gameOver") {
         		d = "enter";
         		return;
         	}
-			console.log('clickkkkkkkkk');
         	var position = getPosition(mouseEvent, sigCanvas);
         	d = checkQuadrant(position);
 		}
@@ -935,6 +911,19 @@ $(document).on('ready', function() {
 		if (punt > record) {
 			var text = 'Record: ' + punt;
 			$( "#record" ).text( text );
+			localStorage.setItem('reco', punt);
+			record = punt;
 		}
 	}
+
+
+	function checkInitialRecord() {
+		var reco = localStorage.getItem('reco');
+   		if (reco !== null) {
+   			checkRecord(reco);
+   		} else {
+   			checkRecord(0);
+   		}
+	}
+
 });
