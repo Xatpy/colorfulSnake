@@ -1,11 +1,9 @@
 $(document).on('ready', function() {
-  	// $('#snake').width(document.body.clientWidth);
-  	// $('#snake').height(document.body.clientHeight);
 
 	var canvas = $("#snake")[0];
 	var context = canvas.getContext("2d");
  
-	//Obtenemos el ancho y alto de nuestro canvas.
+	//we gt canvas size.
 	var width = $("#snake").width();
 	var height = $("#snake").height();
 
@@ -17,7 +15,7 @@ $(document).on('ready', function() {
 	var pause = false;
 
 	//Global variables
-	var cellWidth = 20;
+	var cellWidth = 25;  // it has to be dynamic
 	var d; 		//direction
 	var old_direction;
 	
@@ -26,7 +24,9 @@ $(document).on('ready', function() {
 	var numFood = 10;
 
 	var score;
-	var level = 5; //Speed level
+
+	var levelDefault = 5;
+	var level = levelDefault;
 	var background = 'white';
 	var border = 'black';
 	var snakeColor = 'black';
@@ -38,8 +38,23 @@ $(document).on('ready', function() {
 
 	var record = -1;
 
-	var is_touch_device = null;
+	var is_touch_device = false;
 	var sigCanvas;
+
+	var vibration = true;
+
+	//Flashing so you're invincible
+	var invincible = true;
+	var foodEatenTimeStamp = 0; 	//We store  the timestamp when we eat correct food
+	var rangeMSInvincible = 1000; 	//ms
+	var timeStampInvincible = 0; 	//Timestamp invincibility
+
+	//Intro flashing explanation
+	var rangeIntro = 3000; 			//3 seconds to learn
+	var timeStampIntro = 0;
+	var intro = true;
+
+	var db;
 
 	init();
 
@@ -50,15 +65,20 @@ $(document).on('ready', function() {
 		initListeners();
 
 		numCellsWidth = Math.floor(width / cellWidth);
-		numCellsHeight = Math.ceil(height / cellWidth);
+		numCellsHeight = Math.floor(height / cellWidth);
+
+		numCellsHeight--;
+		numCellsWidth--;
 
 		generateTextGameOver();
 		generateTextPause();
 
 		resetGame();
+		timeStampIntro = Date.now();//It isn't inside resetGame because it's only shown the firtst time
 
-		checkRecord(0);
+		checkInitialRecord();
 	}
+
 
 	function resetGame() {
 		d = "right";
@@ -73,28 +93,51 @@ $(document).on('ready', function() {
 		}
 		 
 		//game speed
-		gameLoop = setInterval(update, 1000 / level);
+		gameLoop = setInterval(update, 1000 / levelDefault);
 	}
  
  	function initialSettings() {
  		if (varScreen) {
-	 		//alert('width:' + document.body.clientWidth + '   : height:' + document.body.clientHeight);
-	 		var size = (document.body.clientHeight <= document.body.clientWidth ? document.body.clientHeight : document.body.clientWidth);
+	 		var sizeCanvas = (document.body.clientHeight <= document.body.clientWidth ? document.body.clientHeight : document.body.clientWidth);
 
+	 		var space = 40; //space to the canvas margin
 			var canvas = document.getElementById('snake');
-			canvas.width = canvas.height = size;
 
-			width = height = size;
+			sizeCanvas -= (space * 2)
+			canvas.width = canvas.height = sizeCanvas;//
+			
+			//Global variables about width and height, used before
+			width = height = sizeCanvas;
+
+			// I'm going to calculate the cellWidth depending on width. 
+			// I have to have, at least 25 cells.
+			cellWidth = Math.floor(sizeCanvas / 25);
+
+			//Then, I'm going to calculate the dimensions of header and record
+			var sizeWindow = $(document).height();
+			var dif = sizeWindow - sizeCanvas;
+
+			//I have dif to share between record and head
+			var margin = dif / 10;
+			//margin = '5px';
+			debugger
+			$('#head').css({"margin": margin + "px"});
+			$('#record').css({"height":"12px", "margin-top": (margin - 10) + "px",
+							  "margin-bottom":"1px"});
+
+			//Setting the font
+			context.font="10px customfont";
 		}
  	}
 
 	function initListeners() {
          is_touch_device = 'ontouchstart' in document.documentElement;
+         //alert('is_touch_device ' + is_touch_device);
 
         // attach the touchstart, touchmove, touchend event listeners.
-        canvas.addEventListener('touchstart', draw, false);
-        canvas.addEventListener('touchmove', draw, false);
-        canvas.addEventListener('touchend', draw, false);
+        canvas.addEventListener('touchstart', touchInput, false);
+        canvas.addEventListener('touchmove', touchInput, false);
+        canvas.addEventListener('touchend', touchInput, false);
 
         // prevent elastic scrolling
         canvas.addEventListener('touchmove', function (event) {
@@ -102,30 +145,32 @@ $(document).on('ready', function() {
         }, false); 
 	}
 
-    function draw(event) {
+    function touchInput(event) {
+		if (d === "") {
+			d = 'down';
+		}
+		currentTimeStamp = Date.now();
+		if (currentTimeStamp > lastTimeStamp + rangeMS) {
+			lastTimeStamp = currentTimeStamp;
 
-       // get the touch coordinates.  Using the first touch in case of multi-touch
-       var coors = {
-          x: event.targetTouches[0].pageX,
-          y: event.targetTouches[0].pageY
-       };
+	       // get the touch coordinates.  Using the first touch in case of multi-touch
+	       if (!event || event.targetTouches > 0 || event.targetTouches[0] === undefined ) {
+	       	return;
+	       }
 
-       // Now we need to get the offset of the canvas location
-       var obj = sigCanvas;
+	       if (state === "gameOver") {
+        		d = "enter";
+        		return;
+        	}
 
-       if (obj.offsetParent) {
-          // Every time we find a new object, we add its offsetLeft and offsetTop to curleft and curtop.
-          do {
-             coors.x -= obj.offsetLeft;
-             coors.y -= obj.offsetTop;
-          }
-		  // The while loop can be "while (obj = obj.offsetParent)" only, which does return null
-		  // when null is passed back, but that creates a warning in some editors (i.e. VS2010).
-          while ((obj = obj.offsetParent) != null);
-       }
+	       var coors = {
+	          x: event.targetTouches[0].pageX,
+	          y: event.targetTouches[0].pageY
+	       };
 
-       // pass the coordinates to the appropriate handler
-       drawer[event.type](coors);
+        	var position = getPosition(event.targetTouches[0]);
+	        d = checkQuadrant(position);
+	    } 
     }
 
     //Creating snake
@@ -134,9 +179,20 @@ $(document).on('ready', function() {
 		var length = 5;
 		snake = [];
  
+ 		/*
 		for(var i = length - 1; i >= 0; i--)
 		{
 			snake.push({ x: i, y: 0 });
+		}
+		*/
+
+		//Random position in hte first half, because the snake always goes to the right
+		var randomPositionX = Math.floor((Math.random() *  (numCellsWidth / 2) ));
+		var randomPositionY = Math.floor((Math.random() * 10) );
+ 
+		for(var i = (length + randomPositionX) - 1; i >= randomPositionX; i--)
+		{
+			snake.push({ x: i, y: randomPositionY });
 		}
 	}
 
@@ -155,7 +211,6 @@ $(document).on('ready', function() {
 		snakeColor = createRandomColor();
 	}
 
-
 	function existColor(color) {
 		var range = 1000000;
 
@@ -171,10 +226,22 @@ $(document).on('ready', function() {
 		return false;
 	}
 
+	//Check if it's a posible position.
+	//It returns true if the position is filled, so you can't put anything there.
+	//It return false if everything is OK.
 	function checkPosition(posRnd) {
+		//Checking snake
 		var snakeLength = snake.length;
 		for (var i = 0; i < snakeLength; ++i) {
 			if ( (snake[i].x === posRnd.x) && (snake[i].y === posRnd.y) ) {
+				return true;
+			}
+		}
+
+		//Checking food
+		var numFood = listFood.length;
+		for (var i = 0; i < numFood; ++i) {
+			if ( (posRnd.x === listFood[i].x) && (posRnd.y === listFood[i].y) ) {
 				return true;
 			}
 		}
@@ -219,12 +286,15 @@ $(document).on('ready', function() {
 	//          1 if it has eaten the correct color
 	//         -1 incorrect color
 	function hasEatenFood(nx, ny) {
-		for (var i = 0; i < numFood; i++) {
-			if ( (nx === listFood[i].x) && (ny === listFood[i].y) ) {
-				if (listFood[i].color === snakeColor) {
-					return 1
-				} else {
-					return -1;
+		//We check te food if we aren't invincible
+		if (!invincible) {
+			for (var i = 0; i < numFood; i++) {
+				if ( (nx === listFood[i].x) && (ny === listFood[i].y) ) {
+					if (listFood[i].color === snakeColor) {
+						return 1
+					} else {
+						return -1;
+					}
 				}
 			}
 		}
@@ -233,21 +303,22 @@ $(document).on('ready', function() {
 
       // works out the X, Y position of the click inside the canvas from the X, Y position on the page
 	function getPosition(mouseEvent, sigCanvas) {
-		var x, y;
+		var x_, y_;
 		if (mouseEvent.pageX != undefined && mouseEvent.pageY != undefined) {
-			x = mouseEvent.pageX;
-			y = mouseEvent.pageY;
+			x_ = mouseEvent.pageX;
+			y_ = mouseEvent.pageY;
 		} else {
-			x = mouseEvent.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
-			y = mouseEvent.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+			x_ = mouseEvent.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+			y_ = mouseEvent.clientY + document.body.scrollTop + document.documentElement.scrollTop;
 		}
 
-		return { X: x - canvas.offsetLeft, Y: y - canvas.offsetTop };
+		return { x: x_ - canvas.offsetLeft, y: y_ - canvas.offsetTop };
 	}
     
     function checkQuadrant(position) {
     	// el punto de la posición donde se ha pulsado en el canvas
-    	var P = [position.X, position.Y];
+    	//var P = [position.X, position.Y];
+    	var P = [position.x, position.y];
     	//Voy a comprobar en qué cuadrante ha dado y lo guardo en la variable result.
     	var dir = "";
     	var centro = [(width / 2), (height / 2)];
@@ -255,29 +326,42 @@ $(document).on('ready', function() {
     	var A = [0,0];
     	var B = [0,height];
     	var C = centro;
+    	//Also, we check that we aren't going to the opposite direction (logic problem)
     	if (pointInTriange(P,A,B,C)) {
-    		dir = "left"; // izquierda
+    		if (d !== "right")
+    			dir = "left"; 
+    		else
+    			dir = "right";
     	} else {
     		//Compruebo en el cuadrante de arriba ||| (0,0) | (centro) | (width, 0)
     		A = [0,0];
     		B = [width, 0];
     		C = centro;
-    		if (pointInTriange(P,A,B,C)) {
-    			dir = "up"; //arriba
+    		if (pointInTriange(P,A,B,C) ) {
+    			if (d !== "down") 
+    				dir = "up"; 
+    			else
+    				dir = "down";
     		} else {
     			//Derecha
     			A = [width, 0];
     			B = centro;
     			C = [width, height];
     			if (pointInTriange(P,A,B,C)) {
-    				dir = "right";
+    				if (d !== "left")
+    					dir = "right";
+    				else
+    					dir = "left";
     			} else {
     				//Abajo
     				A = [width, height];
     				B = centro;
     				C = [0, height];
     				if (pointInTriange(P,A,B,C)) {
-    					dir = "down";
+    					if (d !== "up")
+    						dir = "down";
+    					else
+    						dir = "up";
     				}
     			}
     		}
@@ -318,14 +402,17 @@ $(document).on('ready', function() {
 		sigCanvas = document.getElementById("canvasSignature");
 	}
 
-	$("#snake").mousedown(function (mouseEvent) {	
-        if (state === "gameOver") {
-        	d = "enter";
-        	return;
-        }
+	$("#snake").mousedown(function (mouseEvent) {
 
-        var position = getPosition(mouseEvent, sigCanvas);
-        d = checkQuadrant(position);
+		if (!is_touch_device) {
+			if (state === "gameOver") {
+        		d = "enter";
+        		return;
+        	}
+        	var position = getPosition(mouseEvent, sigCanvas);
+        	d = checkQuadrant(position);
+		}
+        
     });
 
 	function update() {
@@ -363,6 +450,9 @@ $(document).on('ready', function() {
 		var nx = snake[0].x;
 		var ny = snake[0].y;
 
+		checkInvincibility();
+		checkIntro();
+
 		if (d === "enter") {
 			pause = true;
 		} else {
@@ -383,11 +473,15 @@ $(document).on('ready', function() {
 			} 
 		}
 
-		if (!pause) {
-			if (nx <= -1 || nx >= numCellsWidth || ny <= -1 || ny >= numCellsHeight || checkCollision(nx, ny, snake)) {
-                window.navigator.vibrate(750);
+		if (!pause && !intro) {
+			if (nx <= -1 || nx > numCellsWidth || ny <= -1 || ny > numCellsHeight || checkCollision(nx, ny, snake)) {
+				if (vibration) {
+                	window.navigator.vibrate(500);
+            	}
 				state = "gameOver";
+				level = levelDefault;
 				checkRecord(score);
+				invincible = false;
 				return;
 			}
 
@@ -398,10 +492,18 @@ $(document).on('ready', function() {
 					//incorrect food
 					state = "gameOver";
 					checkRecord(score);
+					level = levelDefault;
 					return;
 				} else {
-					//correct food
-					//level += 10; 
+					//Food eaten!
+					level += 1; 
+
+					//Acttivating flash, so the snake is invincible
+					invincible = true;
+					foodEatenTimeStamp = Date.now();
+
+					clearInterval(gameLoop);
+					gameLoop = setInterval(update, 1000 / level);
 				}
 
 				var tail = {
@@ -411,7 +513,9 @@ $(document).on('ready', function() {
 				score++;
 				//createFood();
 				createRandomListFood();
-                window.navigator.vibrate(200);
+				if (vibration) {
+                	window.navigator.vibrate(100);
+            	}
 			} else {
 				var tail = snake.pop();	 
 				tail.x = nx;
@@ -432,16 +536,126 @@ $(document).on('ready', function() {
 			paintGameOver();
 		}
 
+		//Painting the snake
 		for (var i = 0; i < snake.length; i++) {
 			var c = snake[i];
-			paintCell(c.x, c.y, snakeColor);
+			paintCell(c.x, c.y, snakeColor, false);
 		}
 
+		//Painting the food
+		contFlashing++;
+		for (var i = 0; i < numFood; ++i) {
+			paintCell(listFood[i].x, listFood[i].y, listFood[i].color, true);
+		}
+
+		//Painting the score
 		var scoreText = "Score: " + score;
 		context.fillText(scoreText, 5, height - 5);
 
-		for (var i = 0; i < numFood; ++i) {
-			paintCell(listFood[i].x, listFood[i].y, listFood[i].color);
+		//Paint learning
+		paintIntro()
+		
+
+	}
+
+	function paintIntro(){
+		if (intro) {
+			for (var i = 0; i <= numCellsHeight; ++i) {
+				paintCell(i,i,'black',true);
+				var secondDiagonal = numCellsHeight - i;
+				paintCell(secondDiagonal, i, 'black', true);
+			}
+
+			//Arrows
+			var centerX = Math.floor(numCellsWidth / 2);
+			var centerY = Math.floor(numCellsHeight / 2);
+
+			//Arrow left
+			for (var i = 3; i <= 9; ++i) {
+				paintCell(centerX - i, centerY, 'black', true);
+				if (i === 7) {
+					paintCell(centerX - i, centerY - 1, 'black', true);
+					paintCell(centerX - i, centerY - 2, 'black', true);
+					paintCell(centerX - i, centerY + 2, 'black', true);
+					paintCell(centerX - i, centerY + 1, 'black', true);
+				}
+				if (i === 8) {
+					paintCell(centerX - i, centerY - 1, 'black', true);
+					paintCell(centerX - i, centerY + 1, 'black', true);
+				}
+			}
+
+			//Arrow right
+			for (var i = 3; i <= 9; ++i) {
+				paintCell(centerX + i, centerY, 'black', true);
+				if (i === 7) {
+					paintCell(centerX + i, centerY - 1, 'black', true);
+					paintCell(centerX + i, centerY - 2, 'black', true);
+					paintCell(centerX + i, centerY + 2, 'black', true);
+					paintCell(centerX + i, centerY + 1, 'black', true);
+				}
+				if (i === 8) {
+					paintCell(centerX + i, centerY - 1, 'black', true);
+					paintCell(centerX + i, centerY + 1, 'black', true);
+				}
+			}
+
+			//Arrow up
+			for (var i = 3; i <= 9; ++i) {
+				paintCell(centerX, centerY - i, 'black', true);
+				if (i === 7) {
+					paintCell(centerX - 1, centerY - i, 'black', true);
+					paintCell(centerX - 2, centerY - i, 'black', true);
+					paintCell(centerX + 2, centerY - i, 'black', true);
+					paintCell(centerX + 1, centerY - i, 'black', true);
+				}
+				if (i === 8) {
+					paintCell(centerX - 1, centerY - i, 'black', true);
+					paintCell(centerX + 1, centerY - i, 'black', true);
+				}
+			}
+
+			//Arrow down
+			for (var i = 3; i <= 9; ++i) {
+				paintCell(centerX, centerY + i, 'black', true);
+				if (i === 7) {
+					paintCell(centerX - 1, centerY + i, 'black', true);
+					paintCell(centerX - 2, centerY + i, 'black', true);
+					paintCell(centerX + 2, centerY + i, 'black', true);
+					paintCell(centerX + 1, centerY + i, 'black', true);
+				}
+				if (i === 8) {
+					paintCell(centerX - 1, centerY + i, 'black', true);
+					paintCell(centerX + 1, centerY + i, 'black', true);
+				}
+			}
+
+		}//if (intro)
+	}
+
+
+	function checkInvincibility() {
+		if (intro) {
+			invincible = true;
+			return;
+		}
+
+		if (invincible) {
+			//Cheking time so we can deactivate the flashing
+			var currTS = Date.now(); //currenTimeStamp
+			if (currTS > rangeMSInvincible + foodEatenTimeStamp) {
+				currTS = 0;
+				invincible = false;
+			}
+		}
+	}
+
+	function checkIntro() {
+		if (intro) {
+			var currTSIntro = Date.now();
+			if (currTSIntro > rangeIntro + timeStampIntro) {
+				intro = false;
+			}
 		}
 	}
 
@@ -453,8 +667,8 @@ $(document).on('ready', function() {
 		var centerX = numCellsWidth / 2;
 		var centerY = numCellsHeight / 2;
 
-		var offsetX = centerX - 10;
-		var offsetY = centerY - 8;
+		var offsetX = centerX - 11;
+		var offsetY = centerY - 9;
 
 		var clr = 'black';
 
@@ -604,23 +818,40 @@ $(document).on('ready', function() {
 	}
 
 	function generateTextPause() {
-
 	}
 
 	function paintGameOver() {
 		var lng = textGameOver.length;
 		for (var i = 0; i < lng; ++i) {
-			paintCell(textGameOver[i].x, textGameOver[i].y, textGameOver[i].color);
+			paintCell(textGameOver[i].x, textGameOver[i].y, textGameOver[i].color, false);
 		}
 	}
 
+	var invincible = true;
+
 	//Pintamos la celda
-	function paintCell(x, y, color)
-	{
-		context.fillStyle = color;
-		context.fillRect(x * cellWidth, y * cellWidth, cellWidth, cellWidth);
-		context.strokeStyle = background;
-		context.strokeRect(x * cellWidth, y * cellWidth, cellWidth, cellWidth);
+	var contFlashing = 0;
+	function paintCell(x, y, color, food)
+	{	
+		var doPaint = false;
+		if (invincible && food) {
+			doPaint = (contFlashing % 2 === 0);
+		} else {
+			//We aren't invincible
+			doPaint = true;
+		}
+
+		if (doPaint || !food ) {
+			context.fillStyle = color;
+			context.fillRect(x * cellWidth, y * cellWidth, cellWidth, cellWidth);
+			//If we are flashing, I'm going to paint yellow the food
+			if (food && invincible) {
+				context.strokeStyle = 'yellow';
+			} else {
+				context.strokeStyle = background;
+			}
+			context.strokeRect(x * cellWidth, y * cellWidth, cellWidth, cellWidth);
+		}
 	}
 
 	//Verificiamos si hubo alguna colisión (si la hubo el juego se reinicia)
@@ -636,19 +867,28 @@ $(document).on('ready', function() {
 	}
 
 	//Captamos las flechas de nuestro teclado para poder mover a nuestra víbora
+	var lastTimeStamp = 0;
+	var currentTimeStamp = 0;
+	var rangeMS = 100;
 	$(document).on('keydown', function(e) {
-		var key = e.which;
-		if (key == "37" && d != "right") {
-			d = "left";
-		} else if (key == "38" && d != "down") {
-			d = "up";
-		} else if (key == "39" && d != "left") {
-			d = "right";
-		} else if (key == "40" && d != "up") {
-			d = "down";
-		} else if (key == "13" && d != "enter") {
-			old_direction = d;
-			d = "enter";
+
+		currentTimeStamp = Date.now();
+		if (currentTimeStamp > lastTimeStamp + rangeMS) {
+			lastTimeStamp = currentTimeStamp;
+
+			var key = e.which;
+			if (key == "37" && d != "right") {
+				d = "left";
+			} else if (key == "38" && d != "down") {
+				d = "up";
+			} else if (key == "39" && d != "left") {
+				d = "right";
+			} else if (key == "40" && d != "up") {
+				d = "down";
+			} else if (key == "13" && d != "enter") {
+				old_direction = d;
+				d = "enter";
+			}
 		}
 	});
 
@@ -656,6 +896,19 @@ $(document).on('ready', function() {
 		if (punt > record) {
 			var text = 'Record: ' + punt;
 			$( "#record" ).text( text );
+			localStorage.setItem('reco', punt);
+			record = punt;
 		}
 	}
+
+
+	function checkInitialRecord() {
+		var reco = localStorage.getItem('reco');
+   		if (reco !== null) {
+   			checkRecord(reco);
+   		} else {
+   			checkRecord(0);
+   		}
+	}
+
 });
