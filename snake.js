@@ -100,7 +100,7 @@ $(document).on('ready', function() {
  		if (varScreen) {
 	 		var sizeCanvas = (document.body.clientHeight <= document.body.clientWidth ? document.body.clientHeight : document.body.clientWidth);
 
-	 		var space = 30; //space to the canvas margin
+	 		var space = 40; //space to the canvas margin
 			var canvas = document.getElementById('snake');
 
 			sizeCanvas -= (space * 2)
@@ -119,6 +119,8 @@ $(document).on('ready', function() {
 
 			//I have dif to share between record and head
 			var margin = dif / 10;
+			//margin = '5px';
+			debugger
 			$('#head').css({"margin": margin + "px"});
 			$('#record').css({"height":"12px", "margin-top": (margin - 10) + "px",
 							  "margin-bottom":"1px"});
@@ -144,9 +146,7 @@ $(document).on('ready', function() {
 	}
 
     function touchInput(event) {
-		console.log('aqui stoy y la d es: ' + d);
 		if (d === "") {
-			console.log('kepasaaki');
 			d = 'down';
 		}
 		currentTimeStamp = Date.now();
@@ -170,9 +170,7 @@ $(document).on('ready', function() {
 
         	var position = getPosition(event.targetTouches[0]);
 	        d = checkQuadrant(position);
-	        console.log(d);
 	    } 
-	    else {console.log('pesao');}
     }
 
     //Creating snake
