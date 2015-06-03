@@ -1,27 +1,91 @@
 <!DOCTYPE html>
 <html>
 	<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0" />
+
+	<script src='cordova.js'></script>
+
 	<script src="http://code.jquery.com/jquery-1.10.1.min.js" type="text/javascript"></script>
+
 	<script src="snake.js" type="text/javascript"></script>
+
+	<script type="text/javascript">
+		
+        var onDeviceReady=function(){
+            navigator.splashscreen.hide();
+            initAdMob();
+		};
+		document.addEventListener("deviceready",onDeviceReady,false);
+        
+        function initAdMob(){
+            if ( window.plugins && window.plugins.AdMob ) {
+				var admob_key_banner = "yourKey"
+                //var admob_key_interstitial = "interstitialKey";
+                window.plugins.AdMob.setOptions( {
+                    publisherId: admob_key_banner,
+                    bannerAtTop: false, // set to true, to put banner at top
+                    overlap: false, // set to true, to allow banner overlap webview
+                    offsetTopBar: true, // set to true to avoid ios7 status bar overlap                    
+                    //interstitialAdId: admob_key_interstitial,
+                    autoShow: true, // autoshow intertitial Ad
+                    isTesting: false // receiving test ad
+                });
+                showAdMobBanner();
+            } else {
+                alert("AdMob plugin not ready");
+            }
+        }
+        
+        function showAdMobBanner(){
+            window.plugins.AdMob.createBannerView();
+        }
+        
+        function showAdMobInterstitial(){
+            window.plugins.AdMob.createInterstitialView();
+        }
+    
+   	</script>
  
 	<style>
+	html, body {
+  		width:  100%;
+  		height: 100%;
+  		margin: 0px;
+	}
 	body {
 		background-color: 'black';
 		text-align: center;
+		font-family: customfont;
+
+		overflow: hidden; 
 	}
 	.game {
 		margin: 0 auto;
-		/*width: 450px;*/
 	}
 
 	.head {
 		text-align: center;
 	}
 
+	#record {
+		color: #5BA619;
+		font-size: 10px;
+	}
+
+	@font-face {
+	    font-family: customfont;
+	    src: url(./fonts/PixelSplitter-Bold.ttf);
+	}
+
+	* { margin:0; padding:0; }
+
 	</style>
+
 	</head>
  
 	<body bgcolor="#666666">
+
 		<h1 class="head" id="head"></h1>
 
 		<script>
@@ -34,7 +98,6 @@
 			 "<span style='color:" + createRandomColor() + "'>o</span>" +
 			 "<span style='color:" + createRandomColor() + "'>l</span>" +
 			 "<span style='color:" + createRandomColor() + "'>o</span>" +
-			 "<span style='color:" + createRandomColor() + "'>u</span>" +
 			 "<span style='color:" + createRandomColor() + "'>r</span>" +
 			 "<span style='color:" + createRandomColor() + "'>f</span>" +
 			 "<span style='color:" + createRandomColor() + "'>u</span>" +
@@ -50,10 +113,10 @@
 		</script>
 		
 		<div class="game">
-			<canvas id="snake" width="600" height="600"></canvas>
-			<!--<canvas id="snake"></canvas>-->
+			<canvas id="snake"></canvas>
 		</div>
 
-		<h2 id="record"></h2>
-	</body>
+		<h2 id="record"></h2>  
+
+    </body>
 </html>
