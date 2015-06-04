@@ -3,7 +3,7 @@ $(document).on('ready', function() {
 	var canvas = $("#snake")[0];
 	var context = canvas.getContext("2d");
  
-	//we gt canvas size.
+	//we get canvas size
 	var width = $("#snake").width();
 	var height = $("#snake").height();
 
@@ -85,7 +85,6 @@ $(document).on('ready', function() {
 		old_direction = undefined;
 
 		createSnake();
-		//createFood();
 		createRandomListFood();
 		score = 0;
 		if (typeof gameLoop != "undefined") {
@@ -120,7 +119,7 @@ $(document).on('ready', function() {
 			//I have dif to share between record and head
 			var margin = dif / 10;
 			//margin = '5px';
-			debugger
+
 			$('#head').css({"margin": margin + "px"});
 			$('#record').css({"height":"12px", "margin-top": (margin - 10) + "px",
 							  "margin-bottom":"1px"});
@@ -132,7 +131,6 @@ $(document).on('ready', function() {
 
 	function initListeners() {
          is_touch_device = 'ontouchstart' in document.documentElement;
-         //alert('is_touch_device ' + is_touch_device);
 
         // attach the touchstart, touchmove, touchend event listeners.
         canvas.addEventListener('touchstart', touchInput, false);
@@ -179,12 +177,10 @@ $(document).on('ready', function() {
 		var length = 5;
 		snake = [];
  
- 		/*
-		for(var i = length - 1; i >= 0; i--)
+		/* for(var i = length - 1; i >= 0; i--)
 		{
 			snake.push({ x: i, y: 0 });
-		}
-		*/
+		} */
 
 		//Random position in hte first half, because the snake always goes to the right
 		var randomPositionX = Math.floor((Math.random() *  (numCellsWidth / 2) ));
@@ -301,7 +297,7 @@ $(document).on('ready', function() {
 		return 0;
 	}
 
-      // works out the X, Y position of the click inside the canvas from the X, Y position on the page
+	// works out the X, Y position of the click inside the canvas from the X, Y position on the page
 	function getPosition(mouseEvent, sigCanvas) {
 		var x_, y_;
 		if (mouseEvent.pageX != undefined && mouseEvent.pageY != undefined) {
@@ -316,16 +312,18 @@ $(document).on('ready', function() {
 	}
     
     function checkQuadrant(position) {
-    	// el punto de la posición donde se ha pulsado en el canvas
-    	//var P = [position.X, position.Y];
+    	// Canvas position that has been pressed
     	var P = [position.x, position.y];
-    	//Voy a comprobar en qué cuadrante ha dado y lo guardo en la variable result.
+
+    	//I'm going to check in what quadrant it has been. It's stored in 'result variable'
     	var dir = "";
     	var centro = [(width / 2), (height / 2)];
-    	//Compruebo el cuadrante de la izquierda ||| (0,0) | (heigh,0) | (width/2,height/2)
+
+    	//Checking left quadrant  ||| (0,0) | (heigh,0) | (width/2,height/2)
     	var A = [0,0];
     	var B = [0,height];
     	var C = centro;
+
     	//Also, we check that we aren't going to the opposite direction (logic problem)
     	if (pointInTriange(P,A,B,C)) {
     		if (d !== "right")
@@ -333,7 +331,7 @@ $(document).on('ready', function() {
     		else
     			dir = "right";
     	} else {
-    		//Compruebo en el cuadrante de arriba ||| (0,0) | (centro) | (width, 0)
+    		//Check upper quadrant ||| (0,0) | (center) | (width, 0)
     		A = [0,0];
     		B = [width, 0];
     		C = centro;
@@ -343,7 +341,7 @@ $(document).on('ready', function() {
     			else
     				dir = "down";
     		} else {
-    			//Derecha
+    			//Right
     			A = [width, 0];
     			B = centro;
     			C = [width, height];
@@ -353,7 +351,7 @@ $(document).on('ready', function() {
     				else
     					dir = "left";
     			} else {
-    				//Abajo
+    				//Down
     				A = [width, height];
     				B = centro;
     				C = [0, height];
@@ -554,8 +552,6 @@ $(document).on('ready', function() {
 
 		//Paint learning
 		paintIntro()
-		
-
 	}
 
 	function paintIntro(){
@@ -633,7 +629,6 @@ $(document).on('ready', function() {
 		}//if (intro)
 	}
 
-
 	function checkInvincibility() {
 		if (intro) {
 			invincible = true;
@@ -641,7 +636,7 @@ $(document).on('ready', function() {
 		}
 
 		if (invincible) {
-			//Cheking time so we can deactivate the flashing
+			//Checking time so we can deactivate the flashing
 			var currTS = Date.now(); //currenTimeStamp
 			if (currTS > rangeMSInvincible + foodEatenTimeStamp) {
 				currTS = 0;
@@ -814,7 +809,6 @@ $(document).on('ready', function() {
         textGameOver.push({x: offsetX + 19, y: offsetY + 15, color:clr});
         textGameOver.push({x: offsetX + 20, y: offsetY + 16, color:clr});
         textGameOver.push({x: offsetX + 21, y: offsetY + 17, color:clr});
-
 	}
 
 	function generateTextPause() {
@@ -854,7 +848,7 @@ $(document).on('ready', function() {
 		}
 	}
 
-	//Verificiamos si hubo alguna colisión (si la hubo el juego se reinicia)
+	//We check if there were any collision (if so, the game is reset)
 	function checkCollision(x, y, array)
 	{
 		for(var i = 0; i < array.length; i++)
@@ -866,12 +860,11 @@ $(document).on('ready', function() {
 		return false;
 	}
 
-	//Captamos las flechas de nuestro teclado para poder mover a nuestra víbora
+	//We store keyboard arrows to move the snake
 	var lastTimeStamp = 0;
 	var currentTimeStamp = 0;
 	var rangeMS = 100;
 	$(document).on('keydown', function(e) {
-
 		currentTimeStamp = Date.now();
 		if (currentTimeStamp > lastTimeStamp + rangeMS) {
 			lastTimeStamp = currentTimeStamp;
@@ -900,7 +893,6 @@ $(document).on('ready', function() {
 			record = punt;
 		}
 	}
-
 
 	function checkInitialRecord() {
 		var reco = localStorage.getItem('reco');
