@@ -1,6 +1,8 @@
 # colorfulSnake
 
-Port game from classic game **Snake** , but introducing a new mechanic: *random colors*.
+![alt tag](https://raw.githubusercontent.com/Xatpy/colorfulSnake/master/assets/logo.png)
+
+### Port game from classic game **Snake** , but introducing a new mechanic: *random colors*.
 
 
 ![alt tag](https://raw.githubusercontent.com/Xatpy/colorfulSnake/master/assets/snapshot.png)
